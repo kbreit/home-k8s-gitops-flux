@@ -13,11 +13,11 @@ spec:
         name: traefik
         namespace: flux-system
       interval: 10m
-      values:
-        ports:
-          web:
-            redirections:
-              entryPoint:
-                to: websecure
-                scheme: https
-                permanent: true
+  values:
+    ports:
+      web:
+        redirections:
+          entryPoint:
+            to: websecure
+            scheme: https
+            permanent: true
