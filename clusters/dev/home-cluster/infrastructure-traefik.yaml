@@ -10,7 +10,7 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  path: "./infrastructure/overlays/dev"
+  path: "./infrastructure/overlays/dev/traefik"
   prune: true
   dependsOn:
     - name: metallb
