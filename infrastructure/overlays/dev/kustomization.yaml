@@ -4,4 +4,4 @@ resources:
   - ../../base/cert-manager
   - ../../base/traefik
   - ../../base/metallb
-  - ./clusterissuer.yaml
+  - ./cert-manager/clusterissuer.yaml
