@@ -12,6 +12,11 @@ spec:
     namespace: flux-system
   path: "./apps/overlays/dev/ecommerce/user-service"
   prune: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+      namespace: flux-system
   dependsOn:
     - name: infrastructure-cert-manager-config
     - name: infrastructure-traefik
