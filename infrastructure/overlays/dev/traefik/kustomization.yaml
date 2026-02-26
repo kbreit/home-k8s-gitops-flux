@@ -5,5 +5,8 @@ resources:
 # patches:
 #   - patch: |-
 #       - op: replace
-#         patch: /spec/chart/spec/version
-#         value "x.y.z."
+#         path: /spec/chart/spec/version
+#         value: "x.y.z"
+#     target:
+#       kind: HelmRelease
+#       name: traefik
