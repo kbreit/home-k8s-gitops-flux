@@ -21,3 +21,8 @@ spec:
   cluster:
     type: kubernetes
     size: medium
+  sync:
+    kind: GitRepository
+    url: https://github.com/kbreit/home-k8s-gitops-flux
+    ref: "refs/heads/main"
+    path: "clusters/dev"
