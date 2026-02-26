@@ -1,0 +1,20 @@
+# disallow-latest-tag.yaml
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-latest-tag
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: check-image-tag
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+              namespaces: [ecommerce]
+      validate:
+        message: "Image tag 'latest' is not allowed — pin to a specific version"
+        pattern:
+          spec:
+            containers:
+              - image: "!*:latest"
