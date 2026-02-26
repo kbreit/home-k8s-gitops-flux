@@ -16,7 +16,6 @@ spec:
     provider: sops
     secretRef:
       name: sops-age
-      namespace: flux-system
   dependsOn:
     - name: infrastructure-cert-manager-config
     - name: infrastructure-traefik
