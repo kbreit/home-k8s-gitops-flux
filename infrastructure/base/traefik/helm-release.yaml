@@ -13,5 +13,3 @@ spec:
         name: traefik
         namespace: flux-system
       interval: 10m
-  values:
-    replicaCount: 2
