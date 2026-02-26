@@ -13,5 +13,5 @@ spec:
   path: "./infrastructure/overlays/dev/traefik"
   prune: true
   dependsOn:
-    - name: metallb
-    - name: cert-manager
+    - name: infrastructure-metallb
+    - name: infrastructure-cert-manager
