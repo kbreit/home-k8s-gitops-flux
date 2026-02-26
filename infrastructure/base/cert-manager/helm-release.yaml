@@ -11,3 +11,5 @@ spec:
     namespace: flux-system
   values:
     replicaCount: 2
+    crds:
+      enabled: true
