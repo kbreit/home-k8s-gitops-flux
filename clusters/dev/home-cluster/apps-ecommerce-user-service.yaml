@@ -10,7 +10,7 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  path: "./apps/base/ecommerce/user-service"
+  path: "./apps/overlays/dev/ecommerce/user-service"
   prune: true
   dependsOn:
     - name: infrastructure-cert-manager-config
