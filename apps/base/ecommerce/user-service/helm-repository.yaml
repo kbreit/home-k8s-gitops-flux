@@ -12,4 +12,4 @@ spec:
   secretRef:
     name: ghcr-token
   ref:
-    semver: "0.0.0"
+    semver: "0.0.1"
