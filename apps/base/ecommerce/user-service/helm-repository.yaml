@@ -9,5 +9,7 @@ spec:
   layerSelector:
     mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
     operation: copy
+  secretRef:
+    name: ghcr-token
   ref:
     semver: "0.0.0"
