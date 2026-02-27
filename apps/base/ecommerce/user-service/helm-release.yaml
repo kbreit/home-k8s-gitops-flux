@@ -10,6 +10,5 @@ spec:
     name: user-service
     namespace: flux-system
   values:
-    replicaCount: 2
-    crds:
-      enabled: true
+    ingress:
+      host: user.home.kevinbreit.net
