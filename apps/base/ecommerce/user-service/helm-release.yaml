@@ -14,3 +14,5 @@ spec:
       host: user.home.kevinbreit.net
     image:
       tag: "1.1.0"
+    imagePullSecrets:
+      - ghcr-token
