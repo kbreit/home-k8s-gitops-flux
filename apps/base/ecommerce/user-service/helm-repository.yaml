@@ -5,11 +5,11 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m
-  url: oci://ghcr.io/kbreit/user-service
+  url: oci://ghcr.io/kbreit/charts/user-service
   layerSelector:
     mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
     operation: copy
   secretRef:
     name: ghcr-token
   ref:
-    semver: "1.1.0"
+    semver: "0.0.4"
