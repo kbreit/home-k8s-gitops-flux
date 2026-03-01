@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m
-  url: oci://ghcr.io/kbreit/charts/user-service
+  url: oci://ghcr.io/kbreit/user-service
   layerSelector:
     mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
     operation: copy
