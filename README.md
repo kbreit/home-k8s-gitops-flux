@@ -20,12 +20,13 @@ GitOps repository for managing Kubernetes clusters using [FluxCD](https://fluxcd
 │           ├── infrastructure.yaml  # Flux Kustomization → infrastructure/overlays/prod
 │           └── apps.yaml           # Flux Kustomization → apps/overlays/prod
 │
-├── infrastructure/                  # Platform/ops tooling (cert-manager, ingress, MetalLB, etc.)
+├── infrastructure/                  # Platform/ops tooling (cert-manager, ingress, MetalLB, NFS storage, etc.)
 │   ├── base/
 │   │   ├── sources/                 # HelmRepository and OCIRepository definitions
 │   │   ├── cert-manager/
 │   │   ├── traefik/
-│   │   └── metallb/
+│   │   ├── metallb/
+│   │   └── nfs-csi/                 # csi-driver-nfs — NFS-backed PersistentVolumes
 │   └── overlays/
 │       ├── dev/                     # Dev-specific values and patches
 │       │   └── patches/
@@ -62,7 +63,7 @@ Adding a new cluster means creating a new directory here with a `flux-instance.y
 
 ### Infrastructure (`infrastructure/`)
 
-Platform tooling that the cluster itself needs to function: ingress controllers, certificate management, load balancer IP allocation, monitoring, etc. These are typically Helm charts installed via FluxCD `HelmRelease` resources.
+Platform tooling that the cluster itself needs to function: ingress controllers, certificate management, load balancer IP allocation, persistent storage, monitoring, etc. These are typically Helm charts installed via FluxCD `HelmRelease` resources.
 
 - **`base/`** — environment-agnostic definitions. `HelmRelease` objects with sensible defaults, `HelmRepository` sources, and namespace declarations.
 - **`overlays/<env>/`** — environment-specific patches applied on top of base. Examples: different MetalLB IP pools, cert-manager replica counts, Traefik log levels.
