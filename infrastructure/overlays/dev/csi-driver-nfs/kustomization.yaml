@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - ../../../base/csi-driver-nfs
   - ./storageclass.yaml
+  - ./storageclass-retain.yaml
