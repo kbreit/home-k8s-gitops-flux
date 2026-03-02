@@ -5,8 +5,12 @@ metadata:
   namespace: cnpg-system
 spec:
   interval: 10m
-  chartRef:
-    kind: HelmChart
-    name: cloudnative-pg
-    namespace: flux-system
+  chart:
+    spec:
+      chart: cloudnative-pg
+      sourceRef:
+        kind: HelmRepository
+        name: cnpg
+        namespace: flux-system
+      interval: 10m
   values:
