@@ -1,0 +1,12 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: ecommerce
+  namespace: cnpg-system
+spec:
+  instances: 3 # 1 primary + 2 replicas
+  storage:
+    size: 5Gi
+  postgresql:
+    parameters:
+      max_connections: "200"
