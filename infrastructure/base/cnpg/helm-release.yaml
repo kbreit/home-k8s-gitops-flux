@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 10m
   chartRef:
-    kind: HelmRepository
+    kind: HelmChart
     name: cnpg
     namespace: flux-system
   values:
