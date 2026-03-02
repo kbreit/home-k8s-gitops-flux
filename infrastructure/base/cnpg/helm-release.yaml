@@ -7,6 +7,6 @@ spec:
   interval: 10m
   chartRef:
     kind: HelmChart
-    name: cnpg
+    name: cloudnative-pg
     namespace: flux-system
   values:
