@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 10m
   chartRef:
-    kind: OCIRepository
+    kind: HelmRepository
     name: cnpg
     namespace: flux-system
   values:
