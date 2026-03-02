@@ -5,7 +5,7 @@ metadata:
 provisioner: nfs.csi.k8s.io
 parameters:
   server: 192.168.15.25
-  share: /k8sCluster
+  share: /volume2/k8sCluster
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
 allowVolumeExpansion: true
