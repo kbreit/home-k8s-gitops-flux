@@ -15,4 +15,4 @@ spec:
     image:
       tag: "1.1.0"
     imagePullSecrets:
-      - ghcr-token
+      - name: ghcr-token
