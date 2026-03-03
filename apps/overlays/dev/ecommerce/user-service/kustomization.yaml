@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - ../../../../base/ecommerce/user-service
   - ./user-service-secret.yaml
+  - ./networkpolicy.yaml
 patches:
   - patch: |-
       - op: replace
