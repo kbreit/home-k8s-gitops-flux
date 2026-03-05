@@ -17,6 +17,17 @@ spec:
           - secretName: grafana-tls
             hosts:
               - grafana.home.kevinbreit.net
+      additionalDataSources:
+        - name: Tempo
+          type: tempo
+          uid: tempo
+          url: http://grafana-tempo.monitoring:3200
+          access: proxy
+          jsonData:
+            tracesToLogsV2:
+              datasourceUid: prometheus
+            nodeGraph:
+              enabled: true
     prometheus:
       ingress:
         enabled: true
