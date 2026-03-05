@@ -1,0 +1,49 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: monitoring
+spec:
+  values:
+    grafana:
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          cert-manager.io/cluster-issuer: ca-issuer
+        hosts:
+          - grafana.home.kevinbreit.net
+        tls:
+          - secretName: grafana-tls
+            hosts:
+              - grafana.home.kevinbreit.net
+    prometheus:
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          cert-manager.io/cluster-issuer: ca-issuer
+        hosts:
+          - prometheus.home.kevinbreit.net
+        paths:
+          - /
+        pathType: Prefix
+        tls:
+          - secretName: prometheus-tls
+            hosts:
+              - prometheus.home.kevinbreit.net
+    alertmanager:
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          cert-manager.io/cluster-issuer: ca-issuer
+        hosts:
+          - alertmanager.home.kevinbreit.net
+        paths:
+          - /
+        pathType: Prefix
+        tls:
+          - secretName: alertmanager-tls
+            hosts:
+              - alertmanager.home.kevinbreit.net
