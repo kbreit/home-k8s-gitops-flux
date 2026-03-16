@@ -29,6 +29,14 @@ patches:
                 name: user-service-config
           database:
             host: ecommerce-dev-rw.cnpg-system
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
     target:
       kind: HelmRelease
       name: user-service
