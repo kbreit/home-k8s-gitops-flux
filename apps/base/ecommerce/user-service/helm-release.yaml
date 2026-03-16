@@ -13,7 +13,7 @@ spec:
     ingress:
       host: user.home.kevinbreit.net
     image:
-      tag: "1.1.0"
+      tag: "1.4.1"
     imagePullSecrets:
       - name: ghcr-token
     envFrom:
