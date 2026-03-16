@@ -19,3 +19,4 @@ spec:
   dependsOn:
     - name: infrastructure-cert-manager-config
     - name: infrastructure-traefik
+    - name: infrastructure-valkey
