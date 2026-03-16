@@ -28,7 +28,7 @@ patches:
             - configMapRef:
                 name: user-service-config
           database:
-            host: ecommerce-dev.cnpg-system
+            host: ecommerce-dev-rw.cnpg-system
     target:
       kind: HelmRelease
       name: user-service
