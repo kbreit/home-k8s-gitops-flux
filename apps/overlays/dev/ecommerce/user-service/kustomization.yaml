@@ -8,7 +8,7 @@ patches:
   - patch: |-
       - op: replace
         path: /spec/ref/semver
-        value: "1.7.2"
+        value: "1.7.3"
     target:
       kind: OCIRepository
       name: user-service
@@ -25,6 +25,8 @@ patches:
           envFrom:
             - secretRef:
                 name: user-service-secret
+            - configMapRef:
+                name: user-service-config
           database:
             host: ecommerce-dev.cnpg-system
     target:
