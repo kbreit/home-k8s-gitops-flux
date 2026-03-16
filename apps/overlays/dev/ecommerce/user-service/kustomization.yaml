@@ -4,6 +4,7 @@ resources:
   - ../../../../base/ecommerce/user-service
   - ./user-service-secret.yaml
   - ./networkpolicy.yaml
+  - ./ciliumnetworkpolicy.yaml
 patches:
   - patch: |-
       - op: replace
