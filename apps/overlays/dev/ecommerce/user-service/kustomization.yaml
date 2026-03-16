@@ -8,7 +8,22 @@ patches:
   - patch: |-
       - op: replace
         path: /spec/ref/semver
-        value: "1.5.1"
+        value: "1.6.0"
     target:
       kind: OCIRepository
       name: user-service
+  - patch: |-
+      - op: replace
+        path: /spec/values
+        value:
+          ingress:
+            host: user.home.kevinbreit.net
+          image:
+            tag: "1.4.1"
+          imagePullSecrets:
+            - name: ghcr-token
+          envFrom:
+            - secretRef:
+                name: user-service-secret
+          database:
+            host: ecommerce-dev.cnpg-system
