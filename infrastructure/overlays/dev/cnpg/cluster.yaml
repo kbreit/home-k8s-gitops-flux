@@ -1,7 +1,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: ecommerce
+  name: ecommerce-dev
   namespace: cnpg-system
 spec:
   instances: 3 # 1 primary + 2 replicas
