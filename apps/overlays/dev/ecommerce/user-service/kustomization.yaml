@@ -29,7 +29,6 @@ patches:
                 name: user-service-config
           database:
             host: ecommerce-dev-rw.cnpg-system
-            databaseName: ecommerce-dev
     target:
       kind: HelmRelease
       name: user-service
