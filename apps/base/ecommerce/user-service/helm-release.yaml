@@ -16,3 +16,6 @@ spec:
       tag: "1.1.0"
     imagePullSecrets:
       - name: ghcr-token
+    envFrom:
+      - secretRef:
+          name: user-service-secret
