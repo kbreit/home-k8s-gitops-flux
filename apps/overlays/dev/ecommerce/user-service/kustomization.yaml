@@ -27,3 +27,6 @@ patches:
                 name: user-service-secret
           database:
             host: ecommerce-dev.cnpg-system
+    target:
+      kind: HelmRelease
+      name: user-service
