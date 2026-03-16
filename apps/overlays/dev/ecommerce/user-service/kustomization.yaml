@@ -8,7 +8,7 @@ patches:
   - patch: |-
       - op: replace
         path: /spec/ref/semver
-        value: "1.5.0"
+        value: "1.5.1"
     target:
       kind: OCIRepository
       name: user-service
