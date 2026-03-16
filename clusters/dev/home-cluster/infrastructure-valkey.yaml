@@ -12,3 +12,7 @@ spec:
     namespace: flux-system
   path: "./infrastructure/overlays/dev/valkey"
   prune: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
