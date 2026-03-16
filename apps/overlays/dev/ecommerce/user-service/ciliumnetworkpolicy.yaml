@@ -1,0 +1,17 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: user-service-kubelet-probes
+  namespace: ecommerce
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/instance: user-service
+  ingress:
+    - fromEntities:
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "3000"
+              protocol: TCP
