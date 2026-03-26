@@ -58,7 +58,7 @@ spec:
           - secretName: alertmanager-tls
             hosts:
               - alertmanager.home.kevinbreit.net
-    prometheus-blackbox-exporteR:
+    prometheus-blackbox-exporter:
       enabled: true
       serviceMonitor:
         enabled: true
