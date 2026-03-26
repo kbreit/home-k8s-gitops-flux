@@ -15,6 +15,7 @@ spec:
       interval: 10m
   values:
     serviceMonitor:
-      enabled: true
-      labels:
-        release: kube-prometheus-stack
+      selfMonitor:
+        enabled: true
+        labels:
+          release: kube-prometheus-stack
