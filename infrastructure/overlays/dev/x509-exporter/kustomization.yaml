@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../base/x509-exporter
+# patches:
+# - patch: |-
+#     - op: replace
+#       path: /spec/values
+#       value:
+#         auth:
+#           enabled: true
+#           existingSecret: "valkey-secret"
+#           existingSecretPasswordKey: "valkey-password"
+#   target:
+#     kind: HelmRelease
+#     name: valkey
