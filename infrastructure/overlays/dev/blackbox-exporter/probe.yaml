@@ -12,6 +12,8 @@ spec:
     url: prometheus-blackbox-exporter.monitoring:9115
   tlsConfig:
     insecureSkipVerify: true
+  httpGet:
+    preferredIPProtocol: "ip4"
   targets:
     staticConfig:
       static:
