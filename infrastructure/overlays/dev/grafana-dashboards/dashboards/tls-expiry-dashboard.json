@@ -66,7 +66,13 @@
       "id": 1,
       "options": {
         "cellHeight": "sm",
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Time"
+          }
+        ]
       },
       "pluginVersion": "12.4.0",
       "targets": [
@@ -77,7 +83,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "last_over_time(probe_success{job=\"probe/monitoring/home-network-tls\"}[5m])",
+          "expr": "last_over_time(probe_ssl_earliest_cert_expiry{job=\"probe/monitoring/home-network-tls\"}[5m])*1000",
           "instant": true,
           "legendFormat": "__auto",
           "range": false,
@@ -85,6 +91,43 @@
         }
       ],
       "title": "Certificate Expiry",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "keepLabels": [
+              "__name__",
+              "instance"
+            ]
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "{__name__=\"probe_ssl_earliest_cert_expiry\", instance=\"https://synology.home.kevinbreit.net:5001\", job=\"probe/monitoring/home-network-tls\", namespace=\"monitoring\"}": "Expiration"
+            }
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "time",
+                "targetField": "Value"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
       "type": "table"
     }
   ],
@@ -102,6 +145,6 @@
   "timezone": "browser",
   "title": "TLS Expiration",
   "uid": "ad2bl4c",
-  "version": 2,
+  "version": 1,
   "weekStart": ""
 }
