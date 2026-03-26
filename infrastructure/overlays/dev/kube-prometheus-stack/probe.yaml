@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: home-network-tls
+  namespace: monitoring
+spec:
+  interval: 1m
+  module: http_2xx
+  prober:
+    url: prometheus-blackbox-exporter.monitoring:9115
+  targets:
+    staticConfig:
+      static:
+        - https://synology.home.kevinbreit.net:5001
