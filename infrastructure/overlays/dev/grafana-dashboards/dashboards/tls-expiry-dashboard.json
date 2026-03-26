@@ -146,7 +146,9 @@
   ],
   "preload": false,
   "schemaVersion": 42,
-  "tags": [],
+  "tags": [
+    "Security"
+  ],
   "templating": {
     "list": []
   },
