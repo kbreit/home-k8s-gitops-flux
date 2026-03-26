@@ -67,6 +67,18 @@
                 "value": "dateTimeFromNow"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Expiration"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 123
+              }
+            ]
           }
         ]
       },
@@ -82,8 +94,8 @@
         "showHeader": true,
         "sortBy": [
           {
-            "desc": true,
-            "displayName": "Time"
+            "desc": false,
+            "displayName": "Value"
           }
         ]
       },
@@ -115,29 +127,25 @@
           }
         },
         {
+          "id": "merge",
+          "options": {}
+        },
+        {
           "id": "organize",
           "options": {
             "excludeByName": {
               "Time": true,
+              "Value": false,
               "__name__": true
             },
             "includeByName": {},
             "indexByName": {},
             "renameByName": {
+              "Time": "",
+              "Value": "Expiration",
+              "instance": "System",
               "{__name__=\"probe_ssl_earliest_cert_expiry\", instance=\"https://synology.home.kevinbreit.net:5001\", job=\"probe/monitoring/home-network-tls\", namespace=\"monitoring\"}": "Expiration"
             }
-          }
-        },
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "destinationType": "time",
-                "targetField": "Value"
-              }
-            ],
-            "fields": {}
           }
         }
       ],
