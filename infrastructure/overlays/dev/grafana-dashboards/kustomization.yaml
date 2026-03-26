@@ -3,8 +3,8 @@ kind: Kustomization
 namespace: monitoring
 configMapGenerator:
   - name: tls-expiry-dashboard
-    literals:
-      - release=kube-prometheus-stack
-      - grafana_dashboard="1"
     files:
       - ./dashboards/tls-expiry-dashboard.json
+generatorOptions:
+  labels:
+    grafana_dashboard: "1"
