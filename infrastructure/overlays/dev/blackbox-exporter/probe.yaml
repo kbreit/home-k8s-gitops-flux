@@ -10,6 +10,8 @@ spec:
   module: http_2xx
   prober:
     url: prometheus-blackbox-exporter.monitoring:9115
+  tlsConfig:
+    insecureSkipVerify: true
   targets:
     staticConfig:
       static:
