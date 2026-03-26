@@ -58,9 +58,3 @@ spec:
           - secretName: alertmanager-tls
             hosts:
               - alertmanager.home.kevinbreit.net
-    prometheus-blackbox-exporter:
-      enabled: true
-      serviceMonitor:
-        enabled: true
-        labels:
-          release: kube-prometheus-stack
