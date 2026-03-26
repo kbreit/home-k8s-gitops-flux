@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: x509-exporter
-  namespace: kube-system
+  namespace: monitoring
 spec:
   interval: 10m
   chart:
