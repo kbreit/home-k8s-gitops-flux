@@ -13,4 +13,5 @@ spec:
   targets:
     staticConfig:
       static:
-        - https://synology.home.kevinbreit.net:5001
+        - https://synology.home.kevinbreit.net
+        - https://homeassistant.home.kevinbreit.net
