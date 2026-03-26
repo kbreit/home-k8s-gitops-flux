@@ -6,5 +6,6 @@ configMapGenerator:
     files:
       - ./dashboards/tls-expiry-dashboard.json
 generatorOptions:
+  disableNameSuffixHash: true
   labels:
     grafana_dashboard: "1"
