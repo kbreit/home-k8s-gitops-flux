@@ -1,0 +1,21 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: product-service
+  namespace: ecommerce
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: product-service
+    namespace: flux-system
+  values:
+    ingress:
+      host: product.home.kevinbreit.net
+    image:
+      tag: "0.2.2"
+    imagePullSecrets:
+      - name: ghcr-token
+    envFrom:
+      - secretRef:
+          name: product-service-secret
