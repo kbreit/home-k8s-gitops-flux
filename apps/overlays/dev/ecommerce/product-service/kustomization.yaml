@@ -24,7 +24,7 @@ patches:
             - name: ghcr-token
           envFrom:
             - secretRef:
-                name: product-service-secret
+                name: user-service-secret
             - configMapRef:
                 name: product-service-config
           database:
