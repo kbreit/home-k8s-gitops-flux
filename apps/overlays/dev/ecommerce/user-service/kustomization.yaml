@@ -38,6 +38,11 @@ patches:
             httpGet:
               path: /health
               port: http
+          resources:
+            limits:
+              memory: 384Mi
+            requests:
+              memory: 384Mi
     target:
       kind: HelmRelease
       name: user-service
