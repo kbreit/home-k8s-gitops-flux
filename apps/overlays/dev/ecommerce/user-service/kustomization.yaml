@@ -38,6 +38,13 @@ patches:
             httpGet:
               path: /health
               port: http
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 12  # 60s total startup budget
           resources:
             limits:
               memory: 384Mi
