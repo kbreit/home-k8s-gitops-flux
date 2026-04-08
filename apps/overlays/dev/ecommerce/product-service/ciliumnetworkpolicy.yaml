@@ -1,12 +1,12 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: payment-service-kubelet-probes
+  name: product-service-kubelet-probes
   namespace: ecommerce
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/instance: payment-service
+      app.kubernetes.io/instance: product-service
   ingress:
     - fromEntities:
         - host

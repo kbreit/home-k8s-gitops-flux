@@ -1,12 +1,12 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: payment-service-to-database
+  name: product-service-to-database
   namespace: ecommerce
 spec:
   podSelector:
     matchLabels:
-      app.kubernetes.io/instance: payment-service
+      app.kubernetes.io/instance: product-service
   policyTypes:
     - Ingress
     - Egress
