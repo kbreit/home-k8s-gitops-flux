@@ -3,5 +3,3 @@ kind: Kustomization
 resources:
   - ./helm-repository.yaml
   - ./helm-release.yaml
-  - ./ghcr-token.yaml
-  - ./ghcr-token-ecommerce.yaml

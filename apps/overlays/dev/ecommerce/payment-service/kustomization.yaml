@@ -9,7 +9,7 @@ patches:
   - patch: |-
       - op: replace
         path: /spec/ref/semver
-        value: "1.8.1"
+        value: "0.4.0"
     target:
       kind: OCIRepository
       name: product-service
@@ -18,9 +18,9 @@ patches:
         path: /spec/values
         value:
           ingress:
-            host: product.home.kevinbreit.net
+            host: payment.home.kevinbreit.net
           image:
-            tag: "1.5.0"
+            tag: "0.4.0"
           imagePullSecrets:
             - name: ghcr-token
           envFrom:
