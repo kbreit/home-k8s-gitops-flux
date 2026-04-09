@@ -25,7 +25,7 @@ patches:
             - name: ghcr-token
           envFrom:
             - secretRef:
-                name: payment-service-secret
+                name: payment-service-secrets
             - configMapRef:
                 name: payment-service-config
           database:
