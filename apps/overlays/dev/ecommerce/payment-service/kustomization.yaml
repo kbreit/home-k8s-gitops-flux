@@ -4,6 +4,7 @@ resources:
   - ../../../../base/ecommerce/payment-service
   - ./networkpolicy.yaml
   - ./ciliumnetworkpolicy.yaml
+  - ./payment-secret.enc.yaml
 patches:
   - patch: |-
       - op: replace
