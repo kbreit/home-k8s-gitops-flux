@@ -11,7 +11,7 @@ patches:
         value: "0.4.0"
     target:
       kind: OCIRepository
-      name: product-service
+      name: payment-service
   - patch: |-
       - op: replace
         path: /spec/values
@@ -24,9 +24,9 @@ patches:
             - name: ghcr-token
           envFrom:
             - secretRef:
-                name: product-service-secret
+                name: payment-service-secret
             - configMapRef:
-                name: product-service-config
+                name: payment-service-config
           database:
             host: ecommerce-dev-rw.cnpg-system
           livenessProbe:
@@ -39,4 +39,4 @@ patches:
               port: http
     target:
       kind: HelmRelease
-      name: product-service
+      name: payment-service
