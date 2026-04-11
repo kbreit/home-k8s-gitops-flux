@@ -1,0 +1,42 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../../base/ecommerce/frontend-service
+  - ./networkpolicy.yaml
+  - ./ciliumnetworkpolicy.yaml
+patches:
+  - patch: |-
+      - op: replace
+        path: /spec/ref/semver
+        value: "1.0.2"
+    target:
+      kind: OCIRepository
+      name: frontend-service
+  - patch: |-
+      - op: replace
+        path: /spec/values
+        value:
+          ingress:
+            host: frontend.home.kevinbreit.net
+          image:
+            tag: "1.3.3"
+          imagePullSecrets:
+            - name: ghcr-token
+          envFrom:
+            - secretRef:
+                name: user-service-secrets
+            - configMapRef:
+                name: frontend-service-config
+          database:
+            host: ecommerce-dev-rw.cnpg-system
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+    target:
+      kind: HelmRelease
+      name: frontend-service
