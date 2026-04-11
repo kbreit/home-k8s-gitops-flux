@@ -5,6 +5,7 @@ resources:
   - ./user-service-secret.yaml
   - ./networkpolicy.yaml
   - ./ciliumnetworkpolicy.yaml
+  - ./database.yaml
 patches:
   - patch: |-
       - op: replace

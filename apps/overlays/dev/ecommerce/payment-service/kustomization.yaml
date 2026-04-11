@@ -5,6 +5,7 @@ resources:
   - ./networkpolicy.yaml
   - ./ciliumnetworkpolicy.yaml
   - ./payment-secret.enc.yaml
+  - ./database.yaml
 patches:
   - patch: |-
       - op: replace
