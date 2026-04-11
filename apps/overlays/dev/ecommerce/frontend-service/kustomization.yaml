@@ -8,7 +8,7 @@ patches:
   - patch: |-
       - op: replace
         path: /spec/ref/semver
-        value: "1.0.2"
+        value: "1.1.0"
     target:
       kind: OCIRepository
       name: frontend-service
