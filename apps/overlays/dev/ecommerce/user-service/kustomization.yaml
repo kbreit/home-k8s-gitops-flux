@@ -31,6 +31,7 @@ patches:
                 name: user-service-config
           database:
             host: ecommerce-dev-rw.cnpg-system
+            database: user-service
           livenessProbe:
             httpGet:
               path: /health
