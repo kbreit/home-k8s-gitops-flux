@@ -10,7 +10,7 @@ patches:
   - patch: |-
       - op: replace
         path: /spec/ref/semver
-        value: "1.8.4"
+        value: "1.9.0"
     target:
       kind: OCIRepository
       name: user-service
@@ -47,6 +47,14 @@ patches:
             initialDelaySeconds: 10
             periodSeconds: 5
             failureThreshold: 12  # 60s total startup budget
+          migrate:
+            enabled: true
+            command:
+              - node
+              - node_modules/.bin/typeorm
+              - migration:run
+              - -d
+              - dist/config/database.js
           resources:
             limits:
               memory: 384Mi
