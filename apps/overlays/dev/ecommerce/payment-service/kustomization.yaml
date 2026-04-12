@@ -11,7 +11,7 @@ patches:
   - patch: |-
       - op: replace
         path: /spec/ref/semver
-        value: "0.5.0"
+        value: "0.6.0"
     target:
       kind: OCIRepository
       name: payment-service
@@ -32,7 +32,10 @@ patches:
                 name: payment-service-config
           database:
             host: ecommerce-dev-rw.cnpg-system
-            database: payment-service
+            databaseName: payment-service
+          orderDatabase:
+            host: ecommerce-dev-rw.cnpg-system
+            databaseName: order-service
           livenessProbe:
             httpGet:
               path: /health
