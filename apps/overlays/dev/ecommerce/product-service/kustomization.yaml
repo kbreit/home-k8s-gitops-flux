@@ -28,8 +28,13 @@ patches:
                 name: user-service-secret
             - configMapRef:
                 name: product-service-config
+          migrate:
+            enabled: true
+            command:
+              - ./migrate
           database:
             host: ecommerce-dev-rw.cnpg-system
+            database: product-service
           livenessProbe:
             httpGet:
               path: /health
