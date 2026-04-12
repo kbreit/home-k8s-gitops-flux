@@ -32,6 +32,7 @@ patches:
                 name: payment-service-config
           database:
             host: ecommerce-dev-rw.cnpg-system
+            database: payment-service
           livenessProbe:
             httpGet:
               path: /health
