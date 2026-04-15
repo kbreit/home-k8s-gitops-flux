@@ -5,6 +5,10 @@ metadata:
   namespace: monitoring
 spec:
   interval: 10m
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
   chartRef:
     kind: OCIRepository
     name: prometheus-community
