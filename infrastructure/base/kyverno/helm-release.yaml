@@ -5,6 +5,7 @@ metadata:
   namespace: kyverno
 spec:
   interval: 10m
+  timeout: 15m
   chart:
     spec:
       chart: kyverno
@@ -13,4 +14,7 @@ spec:
         name: kyverno
         namespace: flux-system
       interval: 10m
-      version: ">=3.0.0"
+      version: "3.8.1"
+  upgrade:
+    remediation:
+      retries: 3
