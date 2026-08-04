@@ -10,8 +10,11 @@ patches:
         value:
           auth:
             enabled: true
-            existingSecret: "valkey-secret"
-            existingSecretPasswordKey: "valkey-password"
+            usersExistingSecret: "valkey-secret"
+            aclUsers:
+              default:
+                permissions: "~* &* +@all"
+                passwordKey: "valkey-password"
     target:
       kind: HelmRelease
       name: valkey
