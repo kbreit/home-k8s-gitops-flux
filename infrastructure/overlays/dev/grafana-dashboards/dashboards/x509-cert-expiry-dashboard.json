@@ -15,10 +15,9 @@
       }
     ]
   },
-  "description": "Unified dashboard for checking certificates expiration: Kubernetes Secrets, certificate files on nodes, or on any server.",
+  "description": "Certificate expiration for cert-manager-managed certificates, sourced from cert-manager's own certmanager_certificate_* metrics (no external x509 exporter required).",
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "gnetId": 13922,
   "graphTooltip": 0,
   "id": null,
   "links": [],
@@ -26,81 +25,41 @@
     {
       "collapsed": false,
       "datasource": null,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
       "id": 24,
       "panels": [],
-      "targets": [
-        {
-          "datasource": null,
-          "refId": "A"
-        }
-      ],
+      "targets": [{ "datasource": null, "refId": "A" }],
       "title": "Overview",
       "type": "row"
     },
     {
-      "datasource": {
-        "uid": "prometheus"
-      },
+      "datasource": { "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
+          "color": { "mode": "thresholds" },
           "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "super-light-blue",
-                "value": null
-              }
-            ]
-          },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "super-light-blue", "value": null }] },
           "unit": "none"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 6,
-        "w": 5,
-        "x": 0,
-        "y": 1
-      },
+      "gridPos": { "h": 6, "w": 4, "x": 0, "y": 1 },
       "id": 2,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "text": {},
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "value",
         "wideLayout": true
       },
       "pluginVersion": "11.2.0",
       "targets": [
         {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "count(x509_cert_not_after)",
-          "interval": "",
+          "datasource": { "uid": "prometheus" },
+          "expr": "count(certmanager_certificate_expiration_timestamp_seconds)",
           "legendFormat": "",
-          "queryType": "randomWalk",
           "refId": "A"
         }
       ],
@@ -108,67 +67,67 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "uid": "prometheus"
-      },
+      "datasource": { "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
+          "color": { "mode": "thresholds" },
           "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "dark-red",
-                "value": 1
-              }
-            ]
-          },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "dark-red", "value": 1 }] },
           "unit": "none"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 6,
-        "w": 3,
-        "x": 5,
-        "y": 1
-      },
-      "id": 18,
+      "gridPos": { "h": 6, "w": 4, "x": 4, "y": 1 },
+      "id": 21,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "text": {},
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "value",
         "wideLayout": true
       },
       "pluginVersion": "11.2.0",
       "targets": [
         {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "sum(((x509_cert_not_after - time()) / 86400) < bool 0)",
-          "interval": "",
+          "datasource": { "uid": "prometheus" },
+          "expr": "sum(certmanager_certificate_ready_status{condition=\"True\"} == bool 0)",
           "legendFormat": "",
-          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "title": "Not Ready",
+      "type": "stat"
+    },
+    {
+      "datasource": { "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "dark-red", "value": 1 }] },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 6, "w": 4, "x": 8, "y": 1 },
+      "id": 18,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": { "uid": "prometheus" },
+          "expr": "sum(((certmanager_certificate_expiration_timestamp_seconds - time()) / 86400) < bool 0)",
+          "legendFormat": "",
           "refId": "A"
         }
       ],
@@ -176,67 +135,33 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "uid": "prometheus"
-      },
+      "datasource": { "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
+          "color": { "mode": "thresholds" },
           "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] },
           "unit": "none"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 6,
-        "w": 3,
-        "x": 8,
-        "y": 1
-      },
+      "gridPos": { "h": 6, "w": 4, "x": 12, "y": 1 },
       "id": 19,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "text": {},
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "value",
         "wideLayout": true
       },
       "pluginVersion": "11.2.0",
       "targets": [
         {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "sum(0 < ((x509_cert_not_after - time()) / 86400) < bool $critical_threshold)",
-          "interval": "",
+          "datasource": { "uid": "prometheus" },
+          "expr": "sum(0 < ((certmanager_certificate_expiration_timestamp_seconds - time()) / 86400) < bool $critical_threshold)",
           "legendFormat": "",
-          "queryType": "randomWalk",
           "refId": "A"
         }
       ],
@@ -244,68 +169,34 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "uid": "prometheus"
-      },
+      "datasource": { "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
+          "color": { "mode": "thresholds" },
           "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              }
-            ]
-          },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1 }] },
           "unit": "none"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 6,
-        "w": 3,
-        "x": 11,
-        "y": 1
-      },
+      "gridPos": { "h": 6, "w": 4, "x": 16, "y": 1 },
       "id": 20,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "text": {},
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "value",
         "wideLayout": true
       },
       "pluginVersion": "11.2.0",
       "targets": [
         {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "sum(0 < ((x509_cert_not_after - time()) / 86400) < bool $warning_threshold)",
+          "datasource": { "uid": "prometheus" },
+          "expr": "sum(0 < ((certmanager_certificate_expiration_timestamp_seconds - time()) / 86400) < bool $warning_threshold)",
           "instant": false,
-          "interval": "",
           "legendFormat": "",
-          "queryType": "randomWalk",
           "refId": "A"
         }
       ],
@@ -313,547 +204,118 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "uid": "prometheus"
-      },
+      "datasource": { "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            }
-          },
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
           "decimals": 0,
           "mappings": [],
           "unit": "short"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 6,
-        "w": 7,
-        "x": 14,
-        "y": 1
-      },
+      "gridPos": { "h": 6, "w": 4, "x": 20, "y": 1 },
       "id": 8,
       "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": true,
-          "values": [
-            "value",
-            "percent"
-          ]
-        },
+        "legend": { "calcs": [], "displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"] },
         "pieType": "donut",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "tooltip": { "mode": "single", "sort": "none" }
       },
       "pluginVersion": "7.4.1",
       "targets": [
         {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "count(x509_cert_not_after{secret_name!=\"\"})",
+          "datasource": { "uid": "prometheus" },
+          "expr": "count by (issuer_kind) (certmanager_certificate_expiration_timestamp_seconds)",
           "instant": true,
-          "interval": "",
-          "legendFormat": "Kubernetes Secret",
-          "queryType": "randomWalk",
+          "legendFormat": "{{issuer_kind}}",
           "refId": "A"
-        },
-        {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "count(x509_cert_not_after{filepath!=\"\",embedded_key!=\"\"})",
-          "hide": false,
-          "instant": true,
-          "interval": "",
-          "legendFormat": "Kubeconfig Embedded",
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "count(x509_cert_not_after{filepath!=\"\",embedded_key=\"\"})",
-          "hide": false,
-          "instant": true,
-          "interval": "",
-          "legendFormat": "Certificate File",
-          "refId": "C"
         }
       ],
-      "title": "Media",
+      "title": "By Issuer Kind",
       "type": "piechart"
-    },
-    {
-      "datasource": {
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "super-light-blue",
-                "value": null
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 21,
-        "y": 1
-      },
-      "id": 17,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "text": {},
-        "textMode": "value",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.2.0",
-      "targets": [
-        {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "count(x509_source_errors_total)",
-          "instant": false,
-          "interval": "",
-          "legendFormat": "",
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "title": "Exporters",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 21,
-        "y": 4
-      },
-      "id": 36,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "text": {},
-        "textMode": "value",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.2.0",
-      "targets": [
-        {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "sum(x509_source_errors_total)",
-          "instant": false,
-          "interval": "",
-          "legendFormat": "",
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "title": "Exporter Errors",
-      "type": "stat"
     },
     {
       "collapsed": false,
       "datasource": null,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 7
-      },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 7 },
       "id": 26,
       "panels": [],
-      "targets": [
-        {
-          "datasource": null,
-          "refId": "A"
-        }
-      ],
+      "targets": [{ "datasource": null, "refId": "A" }],
       "title": "Expiration",
       "type": "row"
     },
     {
-      "datasource": {
-        "uid": "prometheus"
-      },
+      "datasource": { "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "cellOptions": {
-              "type": "auto"
-            },
-            "filterable": true,
-            "inspect": false
-          },
+          "color": { "mode": "thresholds" },
+          "custom": { "cellOptions": { "type": "auto" }, "filterable": true, "inspect": false },
           "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              }
-            ]
-          }
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }] }
         },
         "overrides": [
           {
-            "matcher": {
-              "id": "byName",
-              "options": "Time Left"
-            },
+            "matcher": { "id": "byName", "options": "Time Left" },
             "properties": [
-              {
-                "id": "custom.align",
-                "value": "center"
-              },
-              {
-                "id": "custom.width",
-                "value": 200
-              },
-              {
-                "id": "custom.filterable",
-                "value": false
-              },
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "mode": "gradient",
-                  "type": "color-background"
-                }
-              },
+              { "id": "custom.align", "value": "center" },
+              { "id": "custom.width", "value": 200 },
+              { "id": "custom.filterable", "value": false },
+              { "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "color-background" } },
               {
                 "id": "thresholds",
                 "value": {
                   "mode": "absolute",
                   "steps": [
-                    {
-                      "color": "dark-red",
-                      "value": null
-                    },
-                    {
-                      "color": "red",
-                      "value": 0
-                    },
-                    {
-                      "color": "yellow",
-                      "value": 7
-                    },
-                    {
-                      "color": "green",
-                      "value": 28
-                    }
+                    { "color": "dark-red", "value": null },
+                    { "color": "red", "value": 0 },
+                    { "color": "yellow", "value": 7 },
+                    { "color": "green", "value": 28 }
                   ]
                 }
               },
-              {
-                "id": "unit",
-                "value": "d"
-              }
+              { "id": "unit", "value": "d" }
             ]
           }
         ]
       },
-      "gridPos": {
-        "h": 13,
-        "w": 12,
-        "x": 0,
-        "y": 8
-      },
+      "gridPos": { "h": 13, "w": 24, "x": 0, "y": 8 },
       "id": 46,
       "options": {
         "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
         "showHeader": true
       },
       "pluginVersion": "11.2.0",
       "targets": [
         {
-          "datasource": {
-            "uid": "prometheus"
-          },
+          "datasource": { "uid": "prometheus" },
           "exemplar": false,
-          "expr": "sort(((x509_cert_not_after{secret_name!=\"\"} - time()) / 86400) < $list_threshold)",
+          "expr": "sort(((certmanager_certificate_expiration_timestamp_seconds - time()) / 86400) < $list_threshold)",
           "format": "table",
           "instant": true,
-          "interval": "",
           "legendFormat": "",
-          "queryType": "randomWalk",
           "refId": "A"
         }
       ],
-      "title": "Kubernetes Secrets (time left < $list_threshold days)",
+      "title": "Certificates expiring within $list_threshold days",
       "transformations": [
         {
           "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "pattern": "^(subject_CN|secret_namespace|secret_name|Value)$"
-            }
-          }
+          "options": { "include": { "pattern": "^(namespace|name|issuer_name|issuer_kind|Value)$" } }
         },
         {
           "id": "organize",
           "options": {
             "excludeByName": {},
-            "indexByName": {
-              "Value": 3,
-              "secret_name": 2,
-              "secret_namespace": 1,
-              "subject_CN": 0
-            },
+            "indexByName": { "namespace": 0, "name": 1, "issuer_kind": 2, "issuer_name": 3, "Value": 4 },
             "renameByName": {
               "Value": "Time Left",
-              "secret_name": "Secret Name",
-              "secret_namespace": "Secret Namespace",
-              "subject_CN": "Subject CN"
-            }
-          }
-        }
-      ],
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "cellOptions": {
-              "type": "auto"
-            },
-            "filterable": true,
-            "inspect": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Time Left"
-            },
-            "properties": [
-              {
-                "id": "custom.align",
-                "value": "center"
-              },
-              {
-                "id": "custom.width",
-                "value": 200
-              },
-              {
-                "id": "custom.filterable",
-                "value": false
-              },
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "mode": "gradient",
-                  "type": "color-background"
-                }
-              },
-              {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "dark-red",
-                      "value": null
-                    },
-                    {
-                      "color": "red",
-                      "value": 0
-                    },
-                    {
-                      "color": "#EAB839",
-                      "value": 7
-                    },
-                    {
-                      "color": "green",
-                      "value": 28
-                    }
-                  ]
-                }
-              },
-              {
-                "id": "unit",
-                "value": "d"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 13,
-        "w": 12,
-        "x": 12,
-        "y": 8
-      },
-      "id": 47,
-      "options": {
-        "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
-        "showHeader": true
-      },
-      "pluginVersion": "11.2.0",
-      "targets": [
-        {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "exemplar": false,
-          "expr": "sort(((x509_cert_not_after{filepath!=\"\"} - time()) / 86400) < $list_threshold)",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "",
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "title": "Host Files (time left < $list_threshold days)",
-      "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "pattern": "^(subject_CN|instance|filepath|Value)$"
-            }
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {
-              "Value": 3,
-              "filepath": 2,
-              "instance": 1,
-              "subject_CN": 0
-            },
-            "renameByName": {
-              "Value": "Time Left",
-              "filepath": "File Path",
-              "instance": "Instance",
-              "subject_CN": "Subject CN"
+              "name": "Certificate",
+              "namespace": "Namespace",
+              "issuer_kind": "Issuer Kind",
+              "issuer_name": "Issuer"
             }
           }
         }
@@ -863,771 +325,274 @@
     {
       "collapsed": false,
       "datasource": null,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 21
-      },
-      "id": 12,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 21 },
+      "id": 27,
       "panels": [],
-      "targets": [
-        {
-          "datasource": null,
-          "refId": "A"
-        }
-      ],
-      "title": "Charts",
+      "targets": [{ "datasource": null, "refId": "A" }],
+      "title": "Not Ready",
       "type": "row"
     },
     {
-      "datasource": {
-        "uid": "prometheus"
-      },
+      "datasource": { "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "cellOptions": {
-              "type": "auto"
-            },
-            "filterable": false,
-            "inspect": false
-          },
+          "color": { "mode": "thresholds" },
+          "custom": { "cellOptions": { "type": "auto" }, "filterable": true, "inspect": false },
           "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }] }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Certificate Count"
-            },
-            "properties": [
-              {
-                "id": "custom.align",
-                "value": "center"
-              },
-              {
-                "id": "custom.width",
-                "value": 150
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
-      "gridPos": {
-        "h": 12,
-        "w": 8,
-        "x": 0,
-        "y": 22
-      },
-      "id": 14,
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 22 },
+      "id": 48,
       "options": {
         "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
         "showHeader": true
       },
       "pluginVersion": "11.2.0",
       "targets": [
         {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "topk(10, sort_desc(count by (issuer_CN) (x509_cert_not_after)))",
+          "datasource": { "uid": "prometheus" },
+          "expr": "certmanager_certificate_ready_status{condition=\"False\"} == 1",
           "format": "table",
           "instant": true,
-          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Certificates currently NOT Ready",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": { "include": { "pattern": "^(namespace|name|issuer_name|issuer_kind)$" } }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": { "namespace": 0, "name": 1, "issuer_kind": 2, "issuer_name": 3 },
+            "renameByName": {
+              "name": "Certificate",
+              "namespace": "Namespace",
+              "issuer_kind": "Issuer Kind",
+              "issuer_name": "Issuer"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 30 },
+      "id": 12,
+      "panels": [],
+      "targets": [{ "datasource": null, "refId": "A" }],
+      "title": "Charts",
+      "type": "row"
+    },
+    {
+      "datasource": { "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": { "cellOptions": { "type": "auto" }, "filterable": false, "inspect": false },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 80 }] }
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Certificate Count" }, "properties": [{ "id": "custom.align", "value": "center" }, { "id": "custom.width", "value": 150 }] }
+        ]
+      },
+      "gridPos": { "h": 10, "w": 8, "x": 0, "y": 31 },
+      "id": 14,
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": { "uid": "prometheus" },
+          "expr": "topk(10, sort_desc(count by (issuer_name) (certmanager_certificate_expiration_timestamp_seconds)))",
+          "format": "table",
+          "instant": true,
           "intervalFactor": 1,
           "legendFormat": "",
-          "queryType": "randomWalk",
           "refId": "A"
         }
       ],
       "title": "Top Issuers",
       "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": [
-                "issuer_CN",
-                "Value"
-              ]
-            }
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "Value": "Certificate Count",
-              "issuer_CN": "Issuer CN"
-            }
-          }
-        }
+        { "id": "filterFieldsByName", "options": { "include": { "names": ["issuer_name", "Value"] } } },
+        { "id": "organize", "options": { "excludeByName": {}, "indexByName": {}, "renameByName": { "Value": "Certificate Count", "issuer_name": "Issuer" } } }
       ],
       "type": "table"
     },
     {
-      "datasource": {
-        "uid": "prometheus"
-      },
+      "datasource": { "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "cellOptions": {
-              "type": "auto"
-            },
-            "filterable": false,
-            "inspect": false
-          },
+          "color": { "mode": "thresholds" },
+          "custom": { "cellOptions": { "type": "auto" }, "filterable": false, "inspect": false },
           "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 80 }] }
         },
         "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Certificate Count"
-            },
-            "properties": [
-              {
-                "id": "custom.align",
-                "value": "center"
-              },
-              {
-                "id": "custom.width",
-                "value": 150
-              }
-            ]
-          }
+          { "matcher": { "id": "byName", "options": "Certificate Count" }, "properties": [{ "id": "custom.align", "value": "center" }, { "id": "custom.width", "value": 150 }] }
         ]
       },
-      "gridPos": {
-        "h": 12,
-        "w": 8,
-        "x": 8,
-        "y": 22
-      },
+      "gridPos": { "h": 10, "w": 8, "x": 8, "y": 31 },
       "id": 15,
       "options": {
         "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
         "showHeader": true
       },
       "pluginVersion": "11.2.0",
       "targets": [
         {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "topk(10, sort_desc(count by (secret_namespace) (x509_cert_not_after{secret_namespace!=\"\"})))",
+          "datasource": { "uid": "prometheus" },
+          "expr": "topk(10, sort_desc(count by (namespace) (certmanager_certificate_expiration_timestamp_seconds)))",
           "format": "table",
           "instant": true,
-          "interval": "",
           "intervalFactor": 1,
           "legendFormat": "",
-          "queryType": "randomWalk",
           "refId": "A"
         }
       ],
-      "title": "Top Namespaces (Kubernetes Secrets)",
+      "title": "Top Namespaces",
       "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": [
-                "Value",
-                "secret_namespace"
-              ]
-            }
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "Value": "Certificate Count",
-              "secret_namespace": "Namespace"
-            }
-          }
-        }
+        { "id": "filterFieldsByName", "options": { "include": { "names": ["namespace", "Value"] } } },
+        { "id": "organize", "options": { "excludeByName": {}, "indexByName": {}, "renameByName": { "Value": "Certificate Count", "namespace": "Namespace" } } }
       ],
       "type": "table"
     },
     {
-      "datasource": {
-        "uid": "prometheus"
-      },
+      "datasource": { "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "cellOptions": {
-              "type": "auto"
-            },
-            "filterable": false,
-            "inspect": false
-          },
+          "color": { "mode": "thresholds" },
+          "custom": { "cellOptions": { "type": "auto" }, "filterable": false, "inspect": false },
           "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 80 }] }
         },
         "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Certificate Count"
-            },
-            "properties": [
-              {
-                "id": "custom.align",
-                "value": "center"
-              },
-              {
-                "id": "custom.width",
-                "value": 150
-              }
-            ]
-          }
+          { "matcher": { "id": "byName", "options": "condition" }, "properties": [{ "id": "custom.align", "value": "center" }] }
         ]
       },
-      "gridPos": {
-        "h": 12,
-        "w": 8,
-        "x": 16,
-        "y": 22
-      },
-      "id": 16,
+      "gridPos": { "h": 10, "w": 8, "x": 16, "y": 31 },
+      "id": 49,
       "options": {
         "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
         "showHeader": true
       },
       "pluginVersion": "11.2.0",
       "targets": [
         {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "topk(10, sort_desc(count by (instance) (x509_cert_not_after{filepath!=\"\"})))",
+          "datasource": { "uid": "prometheus" },
+          "expr": "certmanager_clusterissuer_ready_status == 1 or certmanager_issuer_ready_status == 1",
           "format": "table",
           "instant": true,
-          "interval": "",
-          "intervalFactor": 1,
           "legendFormat": "",
-          "queryType": "randomWalk",
           "refId": "A"
         }
       ],
-      "title": "Top Instances (Host Paths)",
+      "title": "Issuer / ClusterIssuer Health",
       "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": [
-                "Value",
-                "instance"
-              ]
-            }
-          }
-        },
+        { "id": "filterFieldsByName", "options": { "include": { "pattern": "^(name|namespace|condition|Value)$" } } },
         {
           "id": "organize",
           "options": {
             "excludeByName": {},
             "indexByName": {},
-            "renameByName": {
-              "Value": "Certificate Count",
-              "instance": "Instance"
-            }
+            "renameByName": { "name": "Issuer", "namespace": "Namespace (blank = cluster-wide)", "Value": "Ready" }
           }
         }
       ],
       "type": "table"
     },
     {
-      "datasource": {
-        "uid": "prometheus"
-      },
+      "datasource": { "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "filterable": false
-          },
+          "color": { "mode": "thresholds" },
+          "custom": { "filterable": false },
           "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green" }, { "color": "red", "value": 80 }] }
         },
         "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Days"
-            },
-            "properties": [
-              {
-                "id": "custom.align",
-                "value": "center"
-              },
-              {
-                "id": "custom.width",
-                "value": 100
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Secret Namespace"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 258
-              }
-            ]
-          }
+          { "matcher": { "id": "byName", "options": "Days" }, "properties": [{ "id": "custom.align", "value": "center" }, { "id": "custom.width", "value": 100 }] }
         ]
       },
-      "gridPos": {
-        "h": 12,
-        "w": 12,
-        "x": 0,
-        "y": 34
-      },
+      "gridPos": { "h": 12, "w": 12, "x": 0, "y": 41 },
       "id": 31,
-      "options": {
-        "showHeader": true,
-        "sortBy": []
-      },
+      "options": { "showHeader": true, "sortBy": [] },
       "pluginVersion": "11.2.0",
       "targets": [
         {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "bottomk(10, (x509_cert_not_after{secret_name!=\"\"} - x509_cert_not_before) / 86400)",
+          "datasource": { "uid": "prometheus" },
+          "expr": "bottomk(10, (certmanager_certificate_not_after_timestamp_seconds - certmanager_certificate_not_before_timestamp_seconds) / 86400)",
           "format": "table",
           "instant": true,
-          "interval": "",
           "legendFormat": "",
-          "queryType": "randomWalk",
           "refId": "A"
         }
       ],
-      "title": "Kubernetes Secrets : Shortest Validity Period",
+      "title": "Shortest Validity Period",
       "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "pattern": "^(subject_CN|secret_namespace|secret_name|Value)$"
-            }
-          }
-        },
+        { "id": "filterFieldsByName", "options": { "include": { "pattern": "^(namespace|name|issuer_name|Value)$" } } },
         {
           "id": "organize",
           "options": {
             "excludeByName": {},
-            "indexByName": {
-              "Value": 3,
-              "secret_name": 2,
-              "secret_namespace": 1,
-              "subject_CN": 0
-            },
-            "renameByName": {
-              "Value": "Days",
-              "secret_name": "Secret Name",
-              "secret_namespace": "Secret Namespace",
-              "subject_CN": "Subject CN"
-            }
+            "indexByName": { "namespace": 0, "name": 1, "issuer_name": 2, "Value": 3 },
+            "renameByName": { "Value": "Days", "name": "Certificate", "namespace": "Namespace", "issuer_name": "Issuer" }
           }
         }
       ],
       "type": "table"
     },
     {
-      "datasource": {
-        "uid": "prometheus"
-      },
+      "datasource": { "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "filterable": false
-          },
+          "color": { "mode": "thresholds" },
+          "custom": { "filterable": false },
           "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green" }, { "color": "red", "value": 80 }] }
         },
         "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Days"
-            },
-            "properties": [
-              {
-                "id": "custom.align",
-                "value": "center"
-              },
-              {
-                "id": "custom.width",
-                "value": 100
-              }
-            ]
-          }
+          { "matcher": { "id": "byName", "options": "Days" }, "properties": [{ "id": "custom.align", "value": "center" }, { "id": "custom.width", "value": 100 }] }
         ]
       },
-      "gridPos": {
-        "h": 12,
-        "w": 12,
-        "x": 12,
-        "y": 34
-      },
-      "id": 33,
-      "options": {
-        "showHeader": true
-      },
-      "pluginVersion": "11.2.0",
-      "targets": [
-        {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "bottomk(10, (x509_cert_not_after{filepath!=\"\"} - x509_cert_not_before) / 86400)",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "",
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "title": "Host Paths : Shortest Validity Period",
-      "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "pattern": "^(subject_CN|instance|filepath|Value)$"
-            }
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {
-              "Value": 3,
-              "filepath": 2,
-              "instance": 1,
-              "subject_CN": 0
-            },
-            "renameByName": {
-              "Value": "Days",
-              "filepath": "File Path",
-              "instance": "Instance",
-              "subject_CN": "Subject CN"
-            }
-          }
-        }
-      ],
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Days"
-            },
-            "properties": [
-              {
-                "id": "custom.align",
-                "value": "center"
-              },
-              {
-                "id": "custom.width",
-                "value": 100
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 12,
-        "w": 12,
-        "x": 0,
-        "y": 46
-      },
-      "id": 28,
-      "options": {
-        "showHeader": true
-      },
-      "pluginVersion": "11.2.0",
-      "targets": [
-        {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "topk(10, (x509_cert_not_after{secret_name!=\"\"} - x509_cert_not_before) / 86400)",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "",
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "title": "Kubernetes Secrets : Longest Validity Period",
-      "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "pattern": "^(subject_CN|secret_namespace|secret_name|Value)$"
-            }
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {
-              "Value": 3,
-              "secret_name": 2,
-              "secret_namespace": 1,
-              "subject_CN": 0
-            },
-            "renameByName": {
-              "Value": "Days",
-              "secret_name": "Secret Name",
-              "secret_namespace": "Secret Namespace",
-              "subject_CN": "Subject CN"
-            }
-          }
-        }
-      ],
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Days"
-            },
-            "properties": [
-              {
-                "id": "custom.align",
-                "value": "center"
-              },
-              {
-                "id": "custom.width",
-                "value": 100
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 12,
-        "w": 12,
-        "x": 12,
-        "y": 46
-      },
+      "gridPos": { "h": 12, "w": 12, "x": 12, "y": 41 },
       "id": 32,
-      "options": {
-        "showHeader": true
-      },
+      "options": { "showHeader": true },
       "pluginVersion": "11.2.0",
       "targets": [
         {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "topk(10, (x509_cert_not_after{filepath!=\"\"} - x509_cert_not_before) / 86400)",
+          "datasource": { "uid": "prometheus" },
+          "expr": "topk(10, (certmanager_certificate_not_after_timestamp_seconds - certmanager_certificate_not_before_timestamp_seconds) / 86400)",
           "format": "table",
           "instant": true,
-          "interval": "",
           "legendFormat": "",
-          "queryType": "randomWalk",
           "refId": "A"
         }
       ],
-      "title": "Host Paths : Longest Validity Period",
+      "title": "Longest Validity Period",
       "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "pattern": "^(subject_CN|instance|filepath|Value)$"
-            }
-          }
-        },
+        { "id": "filterFieldsByName", "options": { "include": { "pattern": "^(namespace|name|issuer_name|Value)$" } } },
         {
           "id": "organize",
           "options": {
             "excludeByName": {},
-            "indexByName": {
-              "Value": 3,
-              "filepath": 2,
-              "instance": 1,
-              "subject_CN": 0
-            },
-            "renameByName": {
-              "Value": "Days",
-              "filepath": "File Path",
-              "instance": "Instance",
-              "subject_CN": "Subject CN"
-            }
+            "indexByName": { "namespace": 0, "name": 1, "issuer_name": 2, "Value": 3 },
+            "renameByName": { "Value": "Days", "name": "Certificate", "namespace": "Namespace", "issuer_name": "Issuer" }
           }
         }
       ],
@@ -1636,21 +601,11 @@
     {
       "collapsed": false,
       "datasource": null,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 58
-      },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 53 },
       "id": 35,
       "panels": [],
-      "targets": [
-        {
-          "datasource": null,
-          "refId": "A"
-        }
-      ],
-      "title": "Exporters",
+      "targets": [{ "datasource": null, "refId": "A" }],
+      "title": "Controller Activity",
       "type": "row"
     },
     {
@@ -1659,42 +614,18 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
+      "datasource": { "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "custom": {} }, "overrides": [] },
       "fill": 1,
       "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 59
-      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 54 },
       "hiddenSeries": false,
       "id": 38,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": true,
-        "min": true,
-        "rightSide": false,
-        "show": true,
-        "total": false,
-        "values": true
-      },
+      "legend": { "alignAsTable": true, "avg": false, "current": true, "max": true, "min": true, "rightSide": false, "show": true, "total": false, "values": true },
       "lines": true,
       "linewidth": 1,
       "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
+      "options": { "alertThreshold": true },
       "percentage": false,
       "pluginVersion": "7.4.1",
       "pointradius": 2,
@@ -1706,768 +637,102 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "count(x509_source_errors_total)",
-          "interval": "",
-          "legendFormat": "exporters",
-          "queryType": "randomWalk",
+          "datasource": { "uid": "prometheus" },
+          "expr": "sum(rate(certmanager_controller_sync_call_count[15m])) by (controller)",
+          "legendFormat": "{{controller}}",
           "refId": "A"
         }
       ],
       "thresholds": [],
       "timeRegions": [],
-      "title": "Reporting Exporters",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
+      "title": "Controller Sync Rate (reconcile activity, not an error signal)",
+      "tooltip": { "shared": true, "sort": 0, "value_type": "individual" },
       "type": "timeseries",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
+      "xaxis": { "mode": "time", "show": true, "values": [] },
       "yaxes": [
-        {
-          "$$hashKey": "object:237",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:238",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
+        { "format": "short", "logBase": 1, "show": true },
+        { "format": "short", "logBase": 1, "show": true }
       ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {
-        "exporters with errors": "red"
-      },
-      "autoMigrateFrom": "graph",
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 59
-      },
-      "hiddenSeries": false,
-      "id": 39,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": true,
-        "min": true,
-        "rightSide": false,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.4.1",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "sum (x509_source_errors_total > bool 0)",
-          "interval": "",
-          "legendFormat": "exporters with errors",
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "Exporters with Errors",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "timeseries",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:237",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:238",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {
-        "error rate": "red",
-        "errors": "red"
-      },
-      "autoMigrateFrom": "graph",
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 67
-      },
-      "hiddenSeries": false,
-      "id": 41,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": true,
-        "min": true,
-        "rightSide": false,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.4.1",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "sum(rate(x509_source_errors_total[15m]))",
-          "interval": "",
-          "legendFormat": "error rate",
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "Error Rate",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "timeseries",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:237",
-          "format": "cps",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:238",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {
-        "errors": "red"
-      },
-      "autoMigrateFrom": "graph",
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 67
-      },
-      "hiddenSeries": false,
-      "id": 40,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": true,
-        "min": true,
-        "rightSide": false,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.4.1",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "sum(x509_source_errors_total)",
-          "interval": "",
-          "legendFormat": "errors",
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "Cumulative Errors",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "timeseries",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:237",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:238",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "datasource": {
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Rate"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 150
-              },
-              {
-                "id": "custom.align",
-                "value": "center"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 12,
-        "w": 12,
-        "x": 0,
-        "y": 75
-      },
-      "id": 43,
-      "options": {
-        "showHeader": true
-      },
-      "pluginVersion": "11.2.0",
-      "targets": [
-        {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "topk(10, rate(x509_source_errors_total[6h]))",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "",
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "title": "Top Exporters by Error Rate",
-      "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "pattern": "^(instance|Value)$"
-            }
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "Value": "Rate",
-              "instance": "Instance"
-            }
-          }
-        }
-      ],
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Errors"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 150
-              },
-              {
-                "id": "custom.align",
-                "value": "center"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 12,
-        "w": 12,
-        "x": 12,
-        "y": 75
-      },
-      "id": 44,
-      "options": {
-        "showHeader": true
-      },
-      "pluginVersion": "11.2.0",
-      "targets": [
-        {
-          "datasource": {
-            "uid": "prometheus"
-          },
-          "expr": "topk(10, x509_source_errors_total)",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "",
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "title": "Top Exporters by Cumulative Errors",
-      "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "pattern": "^(instance|Value)$"
-            }
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "Value": "Errors",
-              "instance": "Instance"
-            }
-          }
-        }
-      ],
-      "type": "table"
+      "yaxis": { "align": false }
     }
   ],
   "refresh": false,
   "schemaVersion": 39,
-  "tags": [],
+  "tags": ["cert-manager"],
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": false,
-          "text": "7",
-          "value": "7"
-        },
+        "current": { "selected": false, "text": "7", "value": "7" },
         "hide": 0,
         "includeAll": false,
         "label": "Critical Threshold (days)",
         "multi": false,
         "name": "critical_threshold",
         "options": [
-          {
-            "selected": false,
-            "text": "1",
-            "value": "1"
-          },
-          {
-            "selected": true,
-            "text": "7",
-            "value": "7"
-          },
-          {
-            "selected": false,
-            "text": "14",
-            "value": "14"
-          },
-          {
-            "selected": false,
-            "text": "15",
-            "value": "15"
-          },
-          {
-            "selected": false,
-            "text": "28",
-            "value": "28"
-          },
-          {
-            "selected": false,
-            "text": "30",
-            "value": "30"
-          },
-          {
-            "selected": false,
-            "text": "60",
-            "value": "60"
-          },
-          {
-            "selected": false,
-            "text": "90",
-            "value": "90"
-          },
-          {
-            "selected": false,
-            "text": "180",
-            "value": "180"
-          },
-          {
-            "selected": false,
-            "text": "365",
-            "value": "365"
-          }
+          { "selected": false, "text": "1", "value": "1" },
+          { "selected": true, "text": "7", "value": "7" },
+          { "selected": false, "text": "14", "value": "14" },
+          { "selected": false, "text": "28", "value": "28" },
+          { "selected": false, "text": "30", "value": "30" },
+          { "selected": false, "text": "60", "value": "60" },
+          { "selected": false, "text": "90", "value": "90" }
         ],
-        "query": "1,7,14,15,28,30,60,90,180,365",
+        "query": "1,7,14,28,30,60,90",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "28",
-          "value": "28"
-        },
+        "current": { "selected": false, "text": "28", "value": "28" },
         "hide": 0,
         "includeAll": false,
         "label": "Warning Threshold (days)",
         "multi": false,
         "name": "warning_threshold",
         "options": [
-          {
-            "selected": false,
-            "text": "1",
-            "value": "1"
-          },
-          {
-            "selected": false,
-            "text": "7",
-            "value": "7"
-          },
-          {
-            "selected": false,
-            "text": "14",
-            "value": "14"
-          },
-          {
-            "selected": false,
-            "text": "15",
-            "value": "15"
-          },
-          {
-            "selected": true,
-            "text": "28",
-            "value": "28"
-          },
-          {
-            "selected": false,
-            "text": "30",
-            "value": "30"
-          },
-          {
-            "selected": false,
-            "text": "60",
-            "value": "60"
-          },
-          {
-            "selected": false,
-            "text": "90",
-            "value": "90"
-          },
-          {
-            "selected": false,
-            "text": "180",
-            "value": "180"
-          },
-          {
-            "selected": false,
-            "text": "365",
-            "value": "365"
-          }
+          { "selected": false, "text": "1", "value": "1" },
+          { "selected": false, "text": "7", "value": "7" },
+          { "selected": false, "text": "14", "value": "14" },
+          { "selected": true, "text": "28", "value": "28" },
+          { "selected": false, "text": "30", "value": "30" },
+          { "selected": false, "text": "60", "value": "60" },
+          { "selected": false, "text": "90", "value": "90" }
         ],
-        "query": "1,7,14,15,28,30,60,90,180,365",
+        "query": "1,7,14,28,30,60,90",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "180",
-          "value": "180"
-        },
+        "current": { "selected": false, "text": "180", "value": "180" },
         "hide": 0,
         "includeAll": false,
         "label": "List expiring in less than (days)",
         "multi": false,
         "name": "list_threshold",
         "options": [
-          {
-            "selected": false,
-            "text": "1",
-            "value": "1"
-          },
-          {
-            "selected": false,
-            "text": "7",
-            "value": "7"
-          },
-          {
-            "selected": false,
-            "text": "15",
-            "value": "15"
-          },
-          {
-            "selected": false,
-            "text": "30",
-            "value": "30"
-          },
-          {
-            "selected": false,
-            "text": "60",
-            "value": "60"
-          },
-          {
-            "selected": false,
-            "text": "90",
-            "value": "90"
-          },
-          {
-            "selected": true,
-            "text": "180",
-            "value": "180"
-          },
-          {
-            "selected": false,
-            "text": "365",
-            "value": "365"
-          },
-          {
-            "selected": false,
-            "text": "730",
-            "value": "730"
-          },
-          {
-            "selected": false,
-            "text": "1095",
-            "value": "1095"
-          },
-          {
-            "selected": false,
-            "text": "1460",
-            "value": "1460"
-          },
-          {
-            "selected": false,
-            "text": "1825",
-            "value": "1825"
-          },
-          {
-            "selected": false,
-            "text": "3650",
-            "value": "3650"
-          },
-          {
-            "selected": false,
-            "text": "7300",
-            "value": "7300"
-          }
+          { "selected": false, "text": "1", "value": "1" },
+          { "selected": false, "text": "7", "value": "7" },
+          { "selected": false, "text": "15", "value": "15" },
+          { "selected": false, "text": "30", "value": "30" },
+          { "selected": false, "text": "60", "value": "60" },
+          { "selected": false, "text": "90", "value": "90" },
+          { "selected": true, "text": "180", "value": "180" },
+          { "selected": false, "text": "365", "value": "365" },
+          { "selected": false, "text": "730", "value": "730" }
         ],
-        "query": "1,7,15,30,60,90,180,365,730,1095,1460,1825,3650,7300",
+        "query": "1,7,15,30,60,90,180,365,730",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
       }
     ]
   },
-  "time": {
-    "from": "now-6h",
-    "to": "now"
-  },
+  "time": { "from": "now-6h", "to": "now" },
   "timepicker": {},
   "timezone": "",
-  "title": "Certificates Expiration (X509 Certificate Exporter)",
+  "title": "Certificates Expiration (cert-manager)",
   "uid": "lHnsYlPGk",
-  "version": 84,
+  "version": 85,
   "weekStart": ""
 }
