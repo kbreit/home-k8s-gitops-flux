@@ -22,3 +22,11 @@ spec:
               to: websecure
               scheme: https
               permanent: true
+    metrics:
+      prometheus:
+        service:
+          enabled: true
+        serviceMonitor:
+          enabled: true
+          additionalLabels:
+            release: kube-prometheus-stack

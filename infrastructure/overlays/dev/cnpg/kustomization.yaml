@@ -4,3 +4,4 @@ resources:
   - ../../../base/cnpg
   - ./cluster.yaml
   - ./database.yaml
+  - ./podmonitor.yaml

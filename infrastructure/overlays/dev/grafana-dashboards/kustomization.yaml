@@ -5,6 +5,15 @@ configMapGenerator:
   - name: tls-expiry-dashboard
     files:
       - ./dashboards/tls-expiry-dashboard.json
+  - name: x509-cert-expiry-dashboard
+    files:
+      - ./dashboards/x509-cert-expiry-dashboard.json
+  - name: cnpg-dashboard
+    files:
+      - ./dashboards/cnpg-dashboard.json
+  - name: traefik-dashboard
+    files:
+      - ./dashboards/traefik-dashboard.json
 generatorOptions:
   disableNameSuffixHash: true
   labels:
