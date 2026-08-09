@@ -1,8 +1,13 @@
 apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
+kind: OCIRepository
 metadata:
   name: x509-exporter
   namespace: flux-system
 spec:
   interval: 10m
-  url: https://charts.enix.io
+  url: oci://quay.io/enix/charts/x509-certificate-exporter
+  layerSelector:
+    mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
+    operation: copy
+  ref:
+    semver: "4.2.0"

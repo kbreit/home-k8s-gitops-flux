@@ -5,14 +5,10 @@ metadata:
   namespace: monitoring
 spec:
   interval: 10m
-  chart:
-    spec:
-      chart: x509-certificate-exporter
-      sourceRef:
-        kind: HelmRepository
-        name: x509-exporter
-        namespace: flux-system
-      interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: x509-exporter
+    namespace: flux-system
   values:
     prometheusServiceMonitor:
       create: true
