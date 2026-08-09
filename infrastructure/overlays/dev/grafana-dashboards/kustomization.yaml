@@ -14,6 +14,12 @@ configMapGenerator:
   - name: traefik-dashboard
     files:
       - ./dashboards/traefik-dashboard.json
+  - name: flux-cluster-dashboard
+    files:
+      - ./dashboards/flux-cluster-dashboard.json
+  - name: flux-control-plane-dashboard
+    files:
+      - ./dashboards/flux-control-plane-dashboard.json
 generatorOptions:
   disableNameSuffixHash: true
   labels:

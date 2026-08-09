@@ -1,0 +1,23 @@
+---
+# flux-operator manages the Flux installation itself and is not part of the
+# app.kubernetes.io/part-of=flux controller set, so it needs its own scrape.
+# Its Service exposes controller-runtime metrics on the "http" port (8080).
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: flux-operator
+  namespace: flux-system
+  labels:
+    release: kube-prometheus-stack
+    app.kubernetes.io/name: flux-operator
+    app.kubernetes.io/component: monitoring
+spec:
+  namespaceSelector:
+    matchNames:
+      - flux-system
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: flux-operator
+  endpoints:
+    - port: http
+      path: /metrics
