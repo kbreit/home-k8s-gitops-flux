@@ -70,7 +70,10 @@ spec:
           resolve_timeout: 5m
           smtp_smarthost: smtp.fastmail.com:587
           smtp_from: prometheus@kevinbreit.net
-          smtp_auth_username: prometheus@kevinbreit.net
+          # Fastmail authenticates as the ACCOUNT, not the alias. prometheus@ is an
+          # alias, so authing as it returns "535 5.7.0 Incorrect username, password
+          # or access token" even with a valid app password. Keep these different.
+          smtp_auth_username: kbreit@kevinbreit.net
           smtp_auth_password_file: /etc/alertmanager/secrets/alertmanager-smtp/password
           smtp_require_tls: true
         route:
