@@ -12,3 +12,7 @@ spec:
     namespace: flux-system
   path: "./infrastructure/overlays/dev/kube-prometheus-stack"
   prune: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age

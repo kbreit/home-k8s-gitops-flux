@@ -60,6 +60,89 @@ spec:
           - secretName: alertmanager-tls
             hosts:
               - alertmanager.home.kevinbreit.net
+      alertmanagerSpec:
+        # Mounts at /etc/alertmanager/secrets/alertmanager-smtp/password.
+        # Secret is SOPS-encrypted in alertmanager-smtp-secret.yaml.
+        secrets:
+          - alertmanager-smtp
+      config:
+        global:
+          resolve_timeout: 5m
+          smtp_smarthost: smtp.fastmail.com:587
+          smtp_from: prometheus@kevinbreit.net
+          smtp_auth_username: prometheus@kevinbreit.net
+          smtp_auth_password_file: /etc/alertmanager/secrets/alertmanager-smtp/password
+          smtp_require_tls: true
+        route:
+          # NEVER set this to "null" -- a null catch-all silently discards every
+          # alert that does not match a child route, which is what hid 7 firing
+          # alerts (incl. 2 critical) until 2026-08-10.
+          receiver: email-default
+          group_by: [namespace, alertname]
+          group_wait: 30s
+          group_interval: 5m
+          repeat_interval: 12h
+          routes:
+            # Watchdog is the always-firing heartbeat; InfoInhibitor only exists
+            # to drive the inhibit_rules below. Neither is actionable.
+            - receiver: "null"
+              matchers:
+                - alertname = "Watchdog"
+            - receiver: "null"
+              matchers:
+                - alertname = "InfoInhibitor"
+            - receiver: email-critical
+              matchers:
+                - severity = "critical"
+              group_wait: 10s
+              repeat_interval: 4h
+        inhibit_rules:
+          - source_matchers:
+              - severity = "critical"
+            target_matchers:
+              - severity =~ "warning|info"
+            equal: [namespace, alertname]
+          - source_matchers:
+              - severity = "warning"
+            target_matchers:
+              - severity = "info"
+            equal: [namespace, alertname]
+          - source_matchers:
+              - alertname = "InfoInhibitor"
+            target_matchers:
+              - severity = "info"
+            equal: [namespace]
+        receivers:
+          - name: "null"
+          - name: email-default
+            email_configs:
+              - to: alerts@kevinbreit.net
+                send_resolved: true
+                headers:
+                  subject: >-
+                    [k8s {{ .Status | toUpper }}] {{ .CommonLabels.alertname }}
+                    ({{ .Alerts | len }})
+          - name: email-critical
+            email_configs:
+              - to: alerts@kevinbreit.net
+                send_resolved: true
+                headers:
+                  subject: >-
+                    [k8s CRITICAL {{ .Status | toUpper }}]
+                    {{ .CommonLabels.alertname }} ({{ .Alerts | len }})
+
+    # Cilium provides kube-proxy replacement -- there is no kube-proxy to scrape,
+    # so KubeProxyDown can only ever be a false positive.
+    kubeProxy:
+      enabled: false
+
+    # Disabled 2026-08-10: etcd only exposes metrics on 127.0.0.1:2381, so the
+    # target is unscrapable from Prometheus on kbedge002 and the etcd rules fire
+    # permanent false positives (etcdMembersDown / etcdInsufficientMembers /
+    # TargetDown) despite etcd being healthy. Re-enable once metrics are reachable
+    # -- see "Fix etcd monitoring" in the CLAUDE.md upgrade roadmap.
+    kubeEtcd:
+      enabled: false
 
     kube-state-metrics:
       rbac:
