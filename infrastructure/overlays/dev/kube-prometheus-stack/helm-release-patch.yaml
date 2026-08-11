@@ -45,6 +45,12 @@ spec:
           - secretName: prometheus-tls
             hosts:
               - prometheus.home.kevinbreit.net
+      prometheusSpec:
+        # Mounts the SOPS-encrypted etcd-client-cert Secret at
+        # /etc/prometheus/secrets/etcd-client-cert/ so the kubeEtcd ServiceMonitor
+        # below can authenticate to etcd's client port. See kubeEtcd for details.
+        secrets:
+          - etcd-client-cert
     alertmanager:
       ingress:
         enabled: true
@@ -77,13 +83,32 @@ spec:
     kubeProxy:
       enabled: false
 
-    # Disabled 2026-08-10: etcd only exposes metrics on 127.0.0.1:2381, so the
-    # target is unscrapable from Prometheus on kbedge002 and the etcd rules fire
-    # permanent false positives (etcdMembersDown / etcdInsufficientMembers /
-    # TargetDown) despite etcd being healthy. Re-enable once metrics are reachable
-    # -- see "Fix etcd monitoring" in the CLAUDE.md upgrade roadmap.
+    # Re-enabled 2026-08-10. etcd's plain-HTTP metrics port 2381 is bound to
+    # 127.0.0.1 only, so it is unreachable from Prometheus on kbedge002. Rather
+    # than exposing 2381 on the LAN (it has no auth), we scrape etcd's already-
+    # reachable *authenticated* client port 2379, which serves the same /metrics.
+    # This needs no change to /etc/kubernetes/manifests/etcd.yaml, so unlike the
+    # kube-controller-manager/kube-scheduler --bind-address fixes it does NOT
+    # revert on kubeadm upgrade.
+    #
+    # Client certs come from the etcd-client-cert Secret (see prometheusSpec.secrets).
+    # No serverName override is needed: etcd's server cert has IP:192.168.15.145
+    # in its SANs, so normal verification against the endpoint IP succeeds.
     kubeEtcd:
-      enabled: false
+      enabled: true
+      # Control-plane node IP. kbedge001 is the only etcd member.
+      endpoints:
+        - 192.168.15.145
+      service:
+        enabled: true
+        port: 2379
+        targetPort: 2379
+      serviceMonitor:
+        scheme: https
+        insecureSkipVerify: false
+        caFile: /etc/prometheus/secrets/etcd-client-cert/ca.crt
+        certFile: /etc/prometheus/secrets/etcd-client-cert/tls.crt
+        keyFile: /etc/prometheus/secrets/etcd-client-cert/tls.key
 
     kube-state-metrics:
       rbac:

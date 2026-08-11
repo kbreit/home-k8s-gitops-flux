@@ -4,6 +4,7 @@ resources:
   - ../../../base/kube-prometheus-stack
   - alertmanager-smtp-secret.yaml
   - alertmanager-config-secret.yaml
+  - etcd-client-cert-secret.yaml
 patches:
   - path: helm-release-patch.yaml
 # patches:
