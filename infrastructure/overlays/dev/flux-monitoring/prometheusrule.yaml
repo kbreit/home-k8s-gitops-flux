@@ -1,0 +1,70 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: flux-monitoring
+  namespace: monitoring
+  labels:
+    # Required: this cluster's Prometheus has
+    # ruleSelector.matchLabels.release=kube-prometheus-stack. Without this label
+    # the rules are ignored silently.
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: flux.rules
+      rules:
+        # gotk_resource_info comes from the kube-state-metrics CustomResourceState
+        # config in the kube-prometheus-stack overlay, NOT from the Flux controllers
+        # (they only expose gotk_reconcile_duration_seconds). If this alert never
+        # fires and `count(gotk_resource_info)` is 0, that CRS config is what broke.
+        #
+        # Note the label names: `exported_namespace` is the Flux resource's own
+        # namespace; the plain `namespace` label is kube-state-metrics' namespace
+        # (monitoring) and is NOT what you want in the notification.
+        - alert: FluxResourceNotReady
+          expr: gotk_resource_info{ready="False"} == 1
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Flux {{ $labels.customresource_kind }}
+              {{ $labels.exported_namespace }}/{{ $labels.name }} is not ready
+            description: >-
+              {{ $labels.customresource_kind }}
+              {{ $labels.exported_namespace }}/{{ $labels.name }} has been
+              Ready=False for more than 15m, so this resource is no longer
+              reconciling. Running workloads are usually unaffected -- they keep
+              running the last successfully applied revision -- but any change
+              committed to Git is NOT being applied. Investigate with:
+              flux get all -A --status-selector ready=false
+
+        # 15m > the 10m reconcile interval, so a single slow/failed reconcile
+        # cycle does not flap.
+        - alert: FluxControllerDown
+          expr: up{job=~"flux-system/flux-controllers|flux-operator"} == 0
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            summary: Flux controller {{ $labels.pod }} is down
+            description: >-
+              Prometheus has failed to scrape the Flux controller
+              {{ $labels.pod }} for more than 15m. GitOps reconciliation for the
+              resources it owns has stopped.
+
+        # Catches the case FluxControllerDown cannot: if the pods disappear
+        # entirely (namespace deleted, DaemonSet/Deployment removed, PodMonitor
+        # broken) the `up` series vanishes rather than going to 0, so an
+        # equality check alone would silently stop evaluating.
+        - alert: FluxControllersAbsent
+          expr: absent(up{job="flux-system/flux-controllers"})
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            summary: Flux controller metrics are absent entirely
+            description: >-
+              No Flux controller scrape targets exist at all. Either every
+              controller is gone from flux-system, or the flux-controllers
+              PodMonitor is no longer selecting them. All GitOps reconciliation
+              is presumed stopped.
