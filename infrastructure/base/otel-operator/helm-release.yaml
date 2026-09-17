@@ -14,3 +14,14 @@ spec:
         namespace: flux-system
       interval: 10m
   values:
+    manager:
+      featureGatesMap:
+        # The 0.123.0 chart bump turned this on by default, which creates a
+        # NetworkPolicy restricting the operator's egress to the apiserver by
+        # ipBlock CIDR. Cilium's policy-cidr-match-mode is unset (default),
+        # so that CIDR rule never matches the control-plane node's IP
+        # (classified as remote-node identity, not CIDR/world), leaving the
+        # operator's egress fully denied and crashlooping on apiserver dial
+        # timeouts. Disable until policy-cidr-match-mode: nodes is set
+        # cluster-wide in Cilium, or the policy is switched to toEntities.
+        operator.networkpolicy: false
