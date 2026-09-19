@@ -14,6 +14,15 @@ spec:
     name: trivy-operator
     namespace: flux-system
   values:
+    trivy:
+      # This cluster has no cluster-wide default StorageClass (confirmed via
+      # `kubectl get storageclass` -- only nfs-csi and nfs-csi-retain exist,
+      # neither marked default), so the trivy-server StatefulSet's PVC was
+      # left permanently unbound ("no persistent volumes available for this
+      # claim and no storage class is set") until this was set explicitly.
+      # nfs-csi (Delete reclaim), not nfs-csi-retain, since this is a
+      # rebuildable vulnerability-DB cache, not data worth retaining.
+      storageClassName: nfs-csi
     operator:
       # ClientServer mode via a single shared, in-cluster Trivy server, instead
       # of every scan Job downloading its own vulnerability DB copy. See
