@@ -10,4 +10,10 @@ spec:
     mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
     operation: copy
   ref:
-    semver: "0.36.0"
+    # 0.36.0 was never published to GHCR (cross-referenced against the GitHub
+    # main branch Chart.yaml / Artifact Hub API instead of the live OCI
+    # registry, both of which were ahead of what's actually pushed here).
+    # Confirmed via GHCR registry API on 2026-09-18: latest published tag is
+    # 0.32.1 (appVersion 0.30.1). Values schema re-validated against the real
+    # 0.32.1 chart -- all 5 value paths below are unchanged.
+    semver: "0.32.1"
