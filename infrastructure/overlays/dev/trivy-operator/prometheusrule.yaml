@@ -15,16 +15,17 @@ spec:
         # Low-frequency digest, not a per-CVE alert. `for: 24h` means a
         # newly-appearing Critical finding does not page immediately -- it
         # needs to still be present a day later, which filters out anything
-        # that gets fixed by the next image rebuild/scan cycle.
-        - alert: TrivyCriticalVulnerabilitiesFound
-          expr: sum(trivy_image_vulnerabilities{severity="Critical"}) > 0
+        # that gets fixed by the next image rebuild/scan cycle. Covers both
+        # Critical and High severity to catch serious vulnerabilities early.
+        - alert: TrivyVulnerabilitiesHighSeverityFound
+          expr: sum(trivy_image_vulnerabilities{severity=~"Critical|High"}) > 0
           for: 24h
           labels:
             severity: warning
           annotations:
-            summary: Trivy has found sustained Critical-severity vulnerabilities
+            summary: Trivy has found sustained High or Critical-severity vulnerabilities
             description: >-
-              trivy-operator has reported {{ $value }} Critical-severity
+              trivy-operator has reported {{ $value }} High or Critical-severity
               vulnerability findings across scanned workloads, sustained for
               over 24h. Investigate with:
               kubectl get vulnerabilityreports -A -o wide
@@ -71,3 +72,35 @@ spec:
             description: >-
               Prometheus has failed to scrape a Trivy Operator target
               ({{ $labels.job }}) for over 15m.
+
+        # Configuration audit findings (misconfigurations detected by Trivy's
+        # config-audit scanner). Covers both Critical and High severity.
+        # `for: 1h` provides reasonable alert delay without missing serious issues.
+        - alert: TrivyConfigAuditHighSeverityFound
+          expr: sum(trivy_resource_configaudits{severity=~"Critical|High"}) > 0
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: Trivy has found High or Critical-severity misconfigurations
+            description: >-
+              trivy-operator has reported {{ $value }} High or Critical-severity
+              misconfiguration findings (ConfigAuditReports) in scanned resources,
+              sustained for over 1h. Investigate with:
+              kubectl get configauditreports -A -o wide
+
+        # RBAC assessment findings (privilege escalation risks detected by Trivy's
+        # rbac-assessment scanner). Covers both Role and ClusterRole findings at
+        # Critical and High severity. `for: 1h` provides reasonable alert delay.
+        - alert: TrivyRBACAssessmentHighSeverityFound
+          expr: sum(trivy_role_rbacassessments{severity=~"Critical|High"}) + sum(trivy_clusterrole_clusterrbacassessments{severity=~"Critical|High"}) > 0
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: Trivy has found High or Critical-severity RBAC assessment findings
+            description: >-
+              trivy-operator has reported {{ $value }} High or Critical-severity
+              RBAC assessment findings (RbacAssessmentReports) in scanned Roles
+              and ClusterRoles, sustained for over 1h. Investigate with:
+              kubectl get rbacassessmentreports -A -o wide
