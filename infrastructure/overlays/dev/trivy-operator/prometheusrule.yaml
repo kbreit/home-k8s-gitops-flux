@@ -1,0 +1,73 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: trivy-operator
+  namespace: monitoring
+  labels:
+    # Required: this cluster's Prometheus has
+    # ruleSelector.matchLabels.release=kube-prometheus-stack. Without this label
+    # the rules are ignored silently.
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: trivy-operator.rules
+      rules:
+        # Low-frequency digest, not a per-CVE alert. `for: 24h` means a
+        # newly-appearing Critical finding does not page immediately -- it
+        # needs to still be present a day later, which filters out anything
+        # that gets fixed by the next image rebuild/scan cycle.
+        - alert: TrivyCriticalVulnerabilitiesFound
+          expr: sum(trivy_image_vulnerabilities{severity="Critical"}) > 0
+          for: 24h
+          labels:
+            severity: warning
+          annotations:
+            summary: Trivy has found sustained Critical-severity vulnerabilities
+            description: >-
+              trivy-operator has reported {{ $value }} Critical-severity
+              vulnerability findings across scanned workloads, sustained for
+              over 24h. Investigate with:
+              kubectl get vulnerabilityreports -A -o wide
+
+        # Scanner-health check, independent of any assumed ServiceMonitor job
+        # label (the exact job name depends on the chart's fullname template
+        # and wasn't verified against a live cluster -- see rollout notes).
+        # trivy_image_vulnerabilities is emitted by the operator itself once
+        # any VulnerabilityReport exists; if the series vanishes entirely,
+        # something broke the scan pipeline (blocked image pulls -- e.g. the
+        # still-expired GHCR token on the ecommerce charts -- a Kyverno-denied
+        # node-collector Job, or the operator/trivy-server crashing), and a
+        # clean cluster becomes silently indistinguishable from a broken one.
+        # 6h grace period covers first-install report generation.
+        - alert: TrivyScanReportsAbsent
+          expr: absent(trivy_image_vulnerabilities)
+          for: 6h
+          labels:
+            severity: critical
+          annotations:
+            summary: No Trivy vulnerability report metrics found
+            description: >-
+              The trivy_image_vulnerabilities metric has had no series for
+              over 6h. Either trivy-operator is not scanning anything, or its
+              ServiceMonitor/metrics endpoint is broken. This is NOT the same
+              as "no vulnerabilities found" -- check:
+              kubectl get pods -n trivy-system
+              kubectl get vulnerabilityreports -A
+
+        # Heuristic job-name match (".*trivy.*") rather than an exact string:
+        # the precise `job` label depends on the chart's generated Service
+        # name, which was not verified against a live cluster. A wrong exact
+        # string would silently never match -- see the Alertmanager
+        # null-receiver and OTel CIDR-match precedents for how badly that
+        # class of bug hides. Tighten to an exact job value once confirmed
+        # with `up{namespace="trivy-system"}` in Prometheus.
+        - alert: TrivyOperatorTargetDown
+          expr: up{job=~".*trivy.*"} == 0
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: Trivy Operator metrics target is down
+            description: >-
+              Prometheus has failed to scrape a Trivy Operator target
+              ({{ $labels.job }}) for over 15m.

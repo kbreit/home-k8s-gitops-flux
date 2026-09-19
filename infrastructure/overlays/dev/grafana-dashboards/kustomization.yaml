@@ -20,6 +20,9 @@ configMapGenerator:
   - name: flux-control-plane-dashboard
     files:
       - ./dashboards/flux-control-plane-dashboard.json
+  - name: trivy-operator-dashboard
+    files:
+      - ./dashboards/trivy-operator-dashboard.json
 generatorOptions:
   disableNameSuffixHash: true
   labels:

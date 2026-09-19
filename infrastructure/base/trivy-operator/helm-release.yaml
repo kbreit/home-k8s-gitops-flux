@@ -1,0 +1,44 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: trivy-operator
+  namespace: trivy-system
+spec:
+  interval: 10m
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  chartRef:
+    kind: OCIRepository
+    name: trivy-operator
+    namespace: flux-system
+  values:
+    operator:
+      # ClientServer mode via a single shared, in-cluster Trivy server, instead
+      # of every scan Job downloading its own vulnerability DB copy. See
+      # aquasecurity/trivy-operator#146 -- the chart default (standalone mode,
+      # one DB pull per Job) is documented to overwhelm small clusters.
+      builtInTrivyServer: true
+      # Chart default is 10 concurrent scan Jobs; this is a resource-constrained
+      # 2-node cluster (kbedge001/kbedge002), so cap it lower.
+      scanJobsConcurrentLimit: 2
+      # Deliberately left at the chart default (false). Per-CVE-ID metric series
+      # is a cardinality bomb per the chart's own docs -- do not enable.
+      # metricsVulnIdEnabled: false
+    nodeCollector:
+      # Without this, the node-collector DaemonSet/Jobs never run on the
+      # control-plane node (kbedge001, tainted node-role.kubernetes.io/control-plane:
+      # NoSchedule), so its CIS-benchmark checks are silently skipped there.
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+    serviceMonitor:
+      enabled: true
+      labels:
+        # Required: this cluster's Prometheus has
+        # serviceMonitorSelector matching release=kube-prometheus-stack. Without
+        # this label the ServiceMonitor is silently ignored (bitten by omitting
+        # this exact label twice already on other components).
+        release: kube-prometheus-stack
