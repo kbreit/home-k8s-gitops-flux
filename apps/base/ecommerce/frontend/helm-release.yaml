@@ -7,7 +7,7 @@ spec:
   interval: 10m
   chartRef:
     kind: OCIRepository
-    name: frontend
+    name: frontend-service
     namespace: flux-system
   values:
     ingress:
