@@ -4,6 +4,7 @@ metadata:
   name: kube-prometheus-stack
   namespace: monitoring
 spec:
+  version: 4.13.4
   interval: 10m
   install:
     crds: CreateReplace
