@@ -35,6 +35,10 @@ patches:
           volumeMounts:
             - name: nginx-cache
               mountPath: /var/cache/nginx
+          securityContext:
+            capabilities:
+              add:
+                - NET_BIND_SERVICE
           livenessProbe:
             httpGet:
               path: /health
