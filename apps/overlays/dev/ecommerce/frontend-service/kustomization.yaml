@@ -24,9 +24,9 @@ patches:
             - name: ghcr-token
           envFrom:
             - secretRef:
-                name: user-service-secrets
+                name: user-service-secret
             - configMapRef:
-                name: frontend-service-config
+                name: frontend-config
           database:
             host: ecommerce-dev-rw.cnpg-system
           livenessProbe:
