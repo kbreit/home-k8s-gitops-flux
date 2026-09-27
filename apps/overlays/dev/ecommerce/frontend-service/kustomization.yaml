@@ -29,6 +29,12 @@ patches:
                 name: frontend-config
           database:
             host: ecommerce-dev-rw.cnpg-system
+          volumes:
+            - name: nginx-cache
+              emptyDir: {}
+          volumeMounts:
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
           livenessProbe:
             httpGet:
               path: /health
