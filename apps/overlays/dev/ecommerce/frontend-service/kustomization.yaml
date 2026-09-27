@@ -32,9 +32,18 @@ patches:
           volumes:
             - name: nginx-cache
               emptyDir: {}
+            - name: nginx-run
+              emptyDir: {}
           volumeMounts:
             - name: nginx-cache
               mountPath: /var/cache/nginx
+            - name: nginx-run
+              mountPath: /var/run
+          # Workaround for frontend image hardcoding `listen 80;`/`pid /var/run/nginx.pid;`
+          # in nginx.conf and ignoring $PORT (no envsubst template). TODO: fix the
+          # Dockerfile (nginx-unprivileged base listening on 8080, or wire $PORT via a
+          # real /etc/nginx/templates/*.template) and drop this sysctl + the two
+          # emptyDir mounts above.
           podSecurityContext:
             fsGroup: 1001
             sysctls:
