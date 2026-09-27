@@ -35,9 +35,11 @@ patches:
           volumeMounts:
             - name: nginx-cache
               mountPath: /var/cache/nginx
-          port: 8080
-          service:
-            port: 8080
+          podSecurityContext:
+            fsGroup: 1001
+            sysctls:
+              - name: net.ipv4.ip_unprivileged_port_start
+                value: "0"
           livenessProbe:
             httpGet:
               path: /health
