@@ -105,10 +105,26 @@ spec:
         targetPort: 2379
       serviceMonitor:
         scheme: https
-        insecureSkipVerify: false
-        caFile: /etc/prometheus/secrets/etcd-client-cert/ca.crt
-        certFile: /etc/prometheus/secrets/etcd-client-cert/tls.crt
-        keyFile: /etc/prometheus/secrets/etcd-client-cert/tls.key
+        # kube-prometheus-stack 90.x removed the flat caFile/certFile/keyFile/
+        # insecureSkipVerify fields in favor of a SafeTLSConfig secret-ref
+        # schema. The default `authorization` (a Bearer token from the
+        # Prometheus SA) is explicitly nulled below since etcd authenticates
+        # via mTLS client cert and ignores it -- no serverName override is
+        # needed, etcd's server cert has IP:192.168.15.145 in its SANs.
+        authorization: null
+        tlsConfig:
+          insecureSkipVerify: false
+          ca:
+            secret:
+              name: etcd-client-cert
+              key: ca.crt
+          cert:
+            secret:
+              name: etcd-client-cert
+              key: tls.crt
+          keySecret:
+            name: etcd-client-cert
+            key: tls.key
 
     kube-state-metrics:
       rbac:
