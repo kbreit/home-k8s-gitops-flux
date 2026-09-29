@@ -14,6 +14,21 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           effect: NoSchedule
       # podDisruptionBudget is auto-enabled by the chart once replicas > 1
-      # (minAvailable: 1 default); podAntiAffinity across hostnames is also
-      # already the chart default (antiAffinity.enabled: true) — spreads the
-      # 2 replicas one per node given the toleration above.
+      # (minAvailable: 1 default).
+      #
+      # The chart's own default anti-affinity is only "preferred" (weight 1),
+      # which proved too weak in practice: with the toleration above, both
+      # replicas landed on kbedge001 anyway, because kbedge002 carries far
+      # more load (CNPG, ecommerce, monitoring) and the scheduler's resource
+      # scoring outweighed the soft hint. On a 2-node cluster that defeats the
+      # whole point (a single node loss still takes out both replicas), so
+      # this forces a hard split instead.
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                    - admission-controller
+            topologyKey: kubernetes.io/hostname
