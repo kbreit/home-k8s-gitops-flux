@@ -32,3 +32,17 @@ spec:
                   values:
                     - admission-controller
             topologyKey: kubernetes.io/hostname
+      # The chart's default RollingUpdate (maxSurge: 1) tries to run 3
+      # admission-controller pods at once during a rollout (2 old + 1
+      # surging new one) — with only 2 nodes and the hard anti-affinity
+      # above, that 3rd pod can never schedule, so every future rollout
+      # (chart bump, values change) deadlocks: Helm marks it Failed/stalled
+      # and Flux rolls back, only to retry the same doomed upgrade again.
+      # maxSurge: 0 keeps total pod count at 2 throughout the rollout
+      # (terminate one old pod, its node frees up, schedule the new one
+      # there, repeat) so there's never a 3-way scheduling conflict.
+      updateStrategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxSurge: 0
+          maxUnavailable: 1
