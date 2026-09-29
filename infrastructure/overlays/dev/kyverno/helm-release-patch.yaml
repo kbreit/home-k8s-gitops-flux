@@ -1,0 +1,19 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kyverno
+  namespace: kyverno
+spec:
+  values:
+    admissionController:
+      replicas: 2
+      # kbedge001 has the control-plane NoSchedule taint; without this toleration
+      # both replicas can only land on kbedge002, defeating the anti-affinity
+      # below and leaving the webhook fully dark whenever kbedge002 is drained.
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          effect: NoSchedule
+      # podDisruptionBudget is auto-enabled by the chart once replicas > 1
+      # (minAvailable: 1 default); podAntiAffinity across hostnames is also
+      # already the chart default (antiAffinity.enabled: true) — spreads the
+      # 2 replicas one per node given the toleration above.
