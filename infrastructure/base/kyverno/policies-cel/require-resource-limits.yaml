@@ -1,0 +1,33 @@
+# require-resource-limits.yaml
+#
+# CEL (policies.kyverno.io) equivalent of the legacy pattern-based
+# ClusterPolicy of the same name in ../policies/require-resource-limits.yaml.
+#
+# NOT YET ACTIVE: this file is not referenced by kustomization.yaml, so
+# Flux will not apply it. It exists so the CEL migration can be reviewed
+# and cut over deliberately once ready.
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: require-resource-limits
+spec:
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ['']
+        apiVersions: [v1]
+        operations: [CREATE, UPDATE]
+        resources: [pods]
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: ecommerce
+  validationActions:
+    - Deny
+  validations:
+    - expression: >-
+        object.spec.containers.all(c,
+          has(c.resources) &&
+          has(c.resources.limits) &&
+          has(c.resources.limits.cpu) &&
+          has(c.resources.limits.memory)
+        )
+      message: "CPU and memory limits are required"

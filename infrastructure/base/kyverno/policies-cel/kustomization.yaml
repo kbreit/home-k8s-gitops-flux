@@ -1,0 +1,12 @@
+# NOT wired into infrastructure/base/kyverno/kustomization.yaml on purpose —
+# these CEL ValidatingPolicy manifests are a prepared-but-inert migration
+# from the legacy ClusterPolicy resources in ../policies/. Flux will not
+# apply anything here until this directory is added as a resource of the
+# parent kustomization (and, per the migration plan, the old ../policies
+# directory is removed to avoid double enforcement of the same rules).
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./require-non-root.yaml
+  - ./disallow-latest-tag.yaml
+  - ./require-resource-limits.yaml

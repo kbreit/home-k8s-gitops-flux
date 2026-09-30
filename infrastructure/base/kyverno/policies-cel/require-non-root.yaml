@@ -1,0 +1,30 @@
+# CEL (policies.kyverno.io) equivalent of the legacy pattern-based
+# ClusterPolicy of the same name in ../policies/require-non-root.yaml.
+#
+# NOT YET ACTIVE: this file is not referenced by kustomization.yaml, so
+# Flux will not apply it. It exists so the CEL migration can be reviewed
+# and cut over deliberately once ready.
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: require-non-root
+spec:
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ['']
+        apiVersions: [v1]
+        operations: [CREATE, UPDATE]
+        resources: [pods]
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: ecommerce
+  validationActions:
+    - Deny
+  validations:
+    - expression: >-
+        object.spec.containers.all(c,
+          has(c.securityContext) &&
+          has(c.securityContext.runAsNonRoot) &&
+          c.securityContext.runAsNonRoot == true
+        )
+      message: "Containers must not run as root"

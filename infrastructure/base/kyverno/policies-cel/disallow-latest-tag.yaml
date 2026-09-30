@@ -1,0 +1,29 @@
+# disallow-latest-tag.yaml
+#
+# CEL (policies.kyverno.io) equivalent of the legacy pattern-based
+# ClusterPolicy of the same name in ../policies/disallow-latest-tag.yaml.
+#
+# NOT YET ACTIVE: this file is not referenced by kustomization.yaml, so
+# Flux will not apply it. It exists so the CEL migration can be reviewed
+# and cut over deliberately once ready. See the migration notes in this
+# directory's README/handoff report for the cutover steps.
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: disallow-latest-tag
+spec:
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ['']
+        apiVersions: [v1]
+        operations: [CREATE, UPDATE]
+        resources: [pods]
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: ecommerce
+  validationActions:
+    - Deny
+  validations:
+    - expression: >-
+        object.spec.containers.all(c, !c.image.endsWith(':latest'))
+      message: "Image tag 'latest' is not allowed — pin to a specific version"
