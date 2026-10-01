@@ -14,3 +14,26 @@ spec:
       create: true
       extraLabels:
         release: kube-prometheus-stack
+    # Without this label, Prometheus's ruleSelector silently ignores this
+    # chart's bundled PrometheusRule (same gotcha as flux-monitoring) -- every
+    # cert-expiry alert (leaf AND the cfssl-issuer CA, which is already
+    # scraped and covered by the same unfiltered rules) was dark until this
+    # was added. Verify with `count(ALERTS{alertname=~"Certificate.*"})`.
+    prometheusRules:
+      create: true
+      extraLabels:
+        release: kube-prometheus-stack
+    # Watches the control-plane's kubeadm PKI (apiserver/etcd certs at
+    # /etc/kubernetes/pki) for expiry -- previously unmonitored. Only
+    # kbedge001 has this directory, so the DaemonSet is pinned there.
+    hostPathsExporter:
+      daemonSets:
+        kubeadm-pki:
+          watchDirectories:
+            - "/etc/kubernetes/pki/**/*.crt"
+          nodeSelector:
+            node-role.kubernetes.io/control-plane: ""
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+              effect: NoSchedule

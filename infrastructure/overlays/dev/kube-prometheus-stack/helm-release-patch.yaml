@@ -126,6 +126,21 @@ spec:
             name: etcd-client-cert
             key: tls.key
 
+    # Textfile collector for host-level metrics that don't come from a
+    # built-in collector -- currently just the trivy-host-scan systemd timer
+    # on both nodes (see /usr/local/bin/trivy-host-scan.sh), which writes
+    # trivy_host_vulnerabilities{severity=...} to
+    # /var/lib/node_exporter/textfile_collector/trivy_host.prom. node-exporter
+    # already mounts the whole host root at /host/root (see the `root`
+    # hostPath volume), so no new volume is needed here, just this flag.
+    # The chart's own default extraArgs (filesystem excludes) are repeated
+    # below since Helm replaces arrays wholesale rather than merging them.
+    prometheus-node-exporter:
+      extraArgs:
+        - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
+        - --collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$
+        - --collector.textfile.directory=/host/root/var/lib/node_exporter/textfile_collector
+
     kube-state-metrics:
       rbac:
         extraRules:
