@@ -15,6 +15,18 @@ spec:
         namespace: flux-system
       interval: 10m
   values:
+    spire-server:
+      dataStore:
+        sql:
+          databaseType: postgres
+          databaseName: spire
+          host: spire-rw.cnpg-system.svc.cluster.local
+          port: 5432
+          username: app
+          externalSecret:
+            enabled: true
+            name: spire-db-credentials
+            key: password
     global:
       spire:
         recommendations:

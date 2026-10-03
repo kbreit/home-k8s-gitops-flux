@@ -2,6 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./namespace.yaml
+  - ./cnpg-db-secret.yaml
+  - ./spire-db-secret.yaml
   - ./cluster.yaml
   - ./database.yaml
   - ./helm-repository.yaml

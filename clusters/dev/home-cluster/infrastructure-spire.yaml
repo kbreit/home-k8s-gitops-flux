@@ -12,3 +12,7 @@ spec:
     namespace: flux-system
   path: "./infrastructure/base/spire"
   prune: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age

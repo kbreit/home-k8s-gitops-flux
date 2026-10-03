@@ -9,6 +9,12 @@ spec:
   storage:
     size: 5Gi
     storageClass: nfs-csi-retain
+  bootstrap:
+    initdb:
+      database: spire
+      owner: app
+      secret:
+        name: spire-db-credentials
   postgresql:
     parameters:
       max_connections: "200"
