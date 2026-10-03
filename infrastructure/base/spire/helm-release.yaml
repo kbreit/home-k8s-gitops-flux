@@ -26,6 +26,7 @@ spec:
           system:
             name: spire
         trustDomain: home.kevinbreit.net
+        clusterName: Kevin Breit Home
         persistence:
           storageClass: nfs-csi-retain
         caSubject:
