@@ -20,8 +20,11 @@ spec:
         recommendations:
           enabled: true
         namespaces:
-          create: true
-        clusterName: home-spire
+          create: false
+          server:
+            name: spire
+          system:
+            name: spire
         trustDomain: home.kevinbreit.net
         persistence:
           storageClass: nfs-csi-retain
