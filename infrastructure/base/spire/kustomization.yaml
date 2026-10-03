@@ -4,3 +4,5 @@ resources:
   - ./namespace.yaml
   - ./cluster.yaml
   - ./database.yaml
+  - ./helm-repository.yaml
+  - ./helm-release.yaml
