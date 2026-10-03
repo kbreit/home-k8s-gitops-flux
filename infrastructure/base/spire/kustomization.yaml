@@ -5,4 +5,5 @@ resources:
   - ./cluster.yaml
   - ./database.yaml
   - ./helm-repository.yaml
+  - ./helm-release-crds.yaml
   - ./helm-release.yaml
