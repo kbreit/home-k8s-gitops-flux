@@ -23,3 +23,5 @@ spec:
           create: false
         clusterName: home-spire
         trustdomain: home.kevinbreit.net
+        persistence:
+          storageClass: nfs-csi-retain
