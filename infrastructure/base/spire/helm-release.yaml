@@ -25,3 +25,7 @@ spec:
         trustDomain: home.kevinbreit.net
         persistence:
           storageClass: nfs-csi-retain
+        caSubject:
+          country: ARPA
+          organization: Kevin Breit Home
+          commonName: home.kevinbreit.net
