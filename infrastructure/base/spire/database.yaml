@@ -1,10 +1,10 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: ecommerce
+  name: spire
   namespace: cnpg-system
 spec:
-  name: ecommerce
+  name: spire
   owner: app
   cluster:
-    name: ecommerce-dev
+    name: spire
