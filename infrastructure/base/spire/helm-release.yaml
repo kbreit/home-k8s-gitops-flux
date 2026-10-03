@@ -26,6 +26,6 @@ spec:
         persistence:
           storageClass: nfs-csi-retain
         caSubject:
-          country: ARPA
+          country: US
           organization: Kevin Breit Home
           commonName: home.kevinbreit.net
