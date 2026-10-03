@@ -20,7 +20,7 @@ spec:
         recommendations:
           enabled: true
         namespaces:
-          create: false
+          create: true
         clusterName: home-spire
         trustDomain: home.kevinbreit.net
         persistence:
