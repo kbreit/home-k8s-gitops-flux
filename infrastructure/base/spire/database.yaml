@@ -1,0 +1,10 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: ecommerce
+  namespace: cnpg-system
+spec:
+  name: ecommerce
+  owner: app
+  cluster:
+    name: ecommerce-dev
