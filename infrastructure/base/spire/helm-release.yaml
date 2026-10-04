@@ -27,6 +27,16 @@ spec:
             enabled: true
             name: spire-db-credentials
             key: password
+    spire-agent:
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+    spiffe-csi-driver:
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
     global:
       spire:
         recommendations:
