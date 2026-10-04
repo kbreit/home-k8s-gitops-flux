@@ -9,3 +9,5 @@ resources:
   - ./helm-repository.yaml
   - ./helm-release-crds.yaml
   - ./helm-release.yaml
+  - ./network-policies.yaml
+  - ./rbac.yaml

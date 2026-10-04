@@ -2,9 +2,18 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: spire
-  namespace: spire
+  namespace: spire-server
 spec:
   interval: 10m
+  # The old release (storage namespace "spire") owns the cluster-scoped objects
+  # until Flux prunes it, so the first install attempts can fail on ownership.
+  # Keep retrying until the old release is gone.
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    remediation:
+      retries: 3
   chart:
     spec:
       chart: spire
@@ -44,9 +53,9 @@ spec:
         namespaces:
           create: false
           server:
-            name: spire
+            name: spire-server
           system:
-            name: spire
+            name: spire-system
         trustDomain: home.kevinbreit.net
         clusterName: breit-home
         persistence:

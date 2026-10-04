@@ -1,0 +1,19 @@
+# The chart's own RBAC (ClusterRoles for the agent, server and controller
+# manager, plus the bundle and leader-election Roles) is left as the chart
+# defines it. This file covers what the chart does not.
+#
+# Nothing in these namespaces uses the "default" ServiceAccount, so it should
+# not hold a usable API token.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: default
+  namespace: spire-server
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: default
+  namespace: spire-system
+automountServiceAccountToken: false

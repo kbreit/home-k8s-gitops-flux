@@ -1,0 +1,146 @@
+# Network lockdown for SPIRE (Cilium enforces these).
+#
+# The agent DaemonSet runs with hostNetwork: true, and NetworkPolicy cannot
+# select host-network pods. Cilium sees their traffic as coming from the node
+# itself, so "who may reach the server API" is expressed with the host and
+# remote-node entities, not with a pod selector. In practice that means "this
+# cluster's nodes", which is the tightest rule the agent design allows.
+
+# Ingress default deny for every pod in spire-server. Egress is restricted per
+# component below, because the chart's Helm hook Jobs also run in this
+# namespace and need the API server.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: spire-server
+spec:
+  endpointSelector: {}
+  ingress:
+    - {}
+---
+# SPIRE server and controller manager (one pod).
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: spire-server
+  namespace: spire-server
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: server
+      app.kubernetes.io/instance: spire
+  ingress:
+    # Server API: agents attest and sync over gRPC. See the note at the top.
+    - fromEntities:
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "8081"
+              protocol: TCP
+    # Controller manager validating webhook, called by the API server.
+    - fromEntities:
+        - kube-apiserver
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "9443"
+              protocol: TCP
+    # Health probes from the local kubelet.
+    - fromEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+    # Prometheus scrapes the server telemetry endpoint.
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: prometheus
+      toPorts:
+        - ports:
+            - port: "9988"
+              protocol: TCP
+  egress:
+    # Datastore.
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: cnpg-system
+            cnpg.io/cluster: spire
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+    # TokenReview, pod and node lookups, and the controller manager's CRD work.
+    - toEntities:
+        - kube-apiserver
+      toPorts:
+        - ports:
+            - port: "6443"
+              protocol: TCP
+    # DNS.
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+---
+# OIDC discovery provider. It talks to the agent over the CSI-mounted socket,
+# which is not network traffic, so it needs no egress except DNS.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: spire-oidc-discovery-provider
+  namespace: spire-server
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: spiffe-oidc-discovery-provider
+      app.kubernetes.io/instance: spire
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: traefik
+      toPorts:
+        - ports:
+            - port: "8443"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "8008"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+---
+# spire-system holds the agents (host network, so not subject to this policy)
+# and the CSI driver, which needs no network access at all.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: default-deny
+  namespace: spire-system
+spec:
+  endpointSelector: {}
+  ingress:
+    - {}
+  egress:
+    - {}

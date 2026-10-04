@@ -1,5 +1,28 @@
+# "spire" is kept only to hold the spire-crds HelmRelease. That release owns the
+# SPIRE CRDs, and uninstalling it would delete every ClusterSPIFFEID.
 apiVersion: v1
 kind: Namespace
 metadata:
   name: spire
+spec: {}
+---
+# SPIRE server, controller manager and OIDC discovery provider.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: spire-server
+  labels:
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/audit: restricted
+spec: {}
+---
+# SPIRE agents and the SPIFFE CSI driver. Both need host access (hostPID,
+# hostNetwork, hostPath), so this namespace has to be privileged.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: spire-system
+  labels:
+    pod-security.kubernetes.io/enforce: privileged
 spec: {}
