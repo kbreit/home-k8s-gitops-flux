@@ -2,7 +2,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: spire-selfsigned
-  namespace: cert-manager
+  namespace: spire-server
 spec:
   isCA: true
   commonName: spire-ca
