@@ -36,6 +36,12 @@ spec:
             enabled: true
             name: spire-db-credentials
             key: password
+      upstreamAuthority:
+        certManager:
+          enabled: true
+          issuer_name: my-ca-issuer
+          issuer_kind: Issuer
+          issuer_group: cert-manager.io
     spire-agent:
       tolerations:
         - key: node-role.kubernetes.io/control-plane
@@ -46,12 +52,6 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
-    upstreamAuthority:
-      certManager:
-        enabled: true
-        issuer_name: my-ca-issuer
-        issuer_kind: Issuer
-        issuer_group: cert-manager.io
     global:
       spire:
         recommendations:
