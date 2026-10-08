@@ -12,23 +12,45 @@ spec:
   groups:
     - name: trivy-operator.rules
       rules:
-        # Low-frequency digest, not a per-CVE alert. `for: 24h` means a
-        # newly-appearing Critical finding does not page immediately -- it
-        # needs to still be present a day later, which filters out anything
-        # that gets fixed by the next image rebuild/scan cycle. Covers both
-        # Critical and High severity to catch serious vulnerabilities early.
-        - alert: TrivyVulnerabilitiesHighSeverityFound
-          expr: sum(trivy_image_vulnerabilities{severity=~"Critical|High"}) > 0
+        # Alerts count distinct images, not raw findings: the operator emits one
+        # VulnerabilityReport per ReplicaSet/pod owner, so the same image shows up
+        # many times across replicas and old ReplicaSets. max-by image collapses
+        # those. Unfixed CVEs are excluded at the source (trivy.ignoreUnfixed in
+        # the HelmRelease), so every finding counted here has a patched version.
+        #
+        # Critical: needs action, but `for: 24h` filters anything fixed by the
+        # next rebuild/scan cycle.
+        - alert: TrivyCriticalVulnerabilitiesFound
+          expr: |
+            count(max by (image_repository, image_tag) (trivy_image_vulnerabilities{severity="Critical"}) > 0) > 0
           for: 24h
           labels:
             severity: warning
+            trivy_tier: critical
           annotations:
-            summary: Trivy has found sustained High or Critical-severity vulnerabilities
+            summary: Trivy has found fixable Critical vulnerabilities
             description: >-
-              trivy-operator has reported {{ $value }} High or Critical-severity
-              vulnerability findings across scanned workloads, sustained for
-              over 24h. Investigate with:
-              kubectl get vulnerabilityreports -A -o wide
+              {{ $value }} image(s) have fixable Critical vulnerabilities,
+              sustained for over 24h. Per-image breakdown:
+              sum by (image_repository, image_tag) (trivy_image_vulnerabilities{severity="Critical"}) > 0
+              or: kubectl get vulnerabilityreports -A -o wide
+
+        # High: lower urgency. `for: 7d` means it only fires for fixes that have
+        # been available and unapplied for a week. trivy_tier=digest is a stable
+        # label for an Alertmanager route with a long repeat_interval.
+        - alert: TrivyHighVulnerabilitiesFound
+          expr: |
+            count(max by (image_repository, image_tag) (trivy_image_vulnerabilities{severity="High"}) > 0) > 0
+          for: 7d
+          labels:
+            severity: info
+            trivy_tier: digest
+          annotations:
+            summary: Trivy has found fixable High vulnerabilities
+            description: >-
+              {{ $value }} image(s) have fixable High vulnerabilities, sustained
+              for over 7d. Per-image breakdown:
+              sum by (image_repository, image_tag) (trivy_image_vulnerabilities{severity="High"}) > 0
 
         # Scanner-health check, independent of any assumed ServiceMonitor job
         # label (the exact job name depends on the chart's fullname template

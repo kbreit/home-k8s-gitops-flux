@@ -19,6 +19,11 @@ spec:
       # criticals). Override until a chart bump ships a newer default; matches
       # the host scanners (0.74.0). Drop this once the chart default catches up.
       tag: "0.74.0"
+      # Only report CVEs that have a fixed version available. Unfixed ones
+      # (nothing actionable) are dropped from VulnerabilityReports entirely, so
+      # they also won't show in `kubectl get vulnerabilityreports` or the Trivy
+      # Grafana dashboard. Re-scan with this off to see the full list.
+      ignoreUnfixed: true
       # This cluster has no cluster-wide default StorageClass (confirmed via
       # `kubectl get storageclass` -- only nfs-csi and nfs-csi-retain exist,
       # neither marked default), so the trivy-server StatefulSet's PVC was
