@@ -24,6 +24,21 @@ spec:
       # they also won't show in `kubectl get vulnerabilityreports` or the Trivy
       # Grafana dashboard. Re-scan with this off to see the full list.
       ignoreUnfixed: true
+      # Trivy's YAML ignore format (selected by the .yaml file name), scoped
+      # per finding + path rather than by bare ID. Applies to the
+      # vulnerability/secret scan Jobs. Paths need the leading slash -- verified
+      # with `trivy image --ignorefile` against the image (no slash = no match).
+      ignoreFileName: .trivyignore.yaml
+      ignoreFile:
+        secrets:
+          - id: private-key
+            paths:
+              - "/etc/ssl/private/ssl-cert-snakeoil.key"
+            statement: >-
+              Debian ssl-cert placeholder ("snakeoil") key baked into the
+              upstream cloudnative-pg/postgresql image. Not used: Postgres
+              runs with ssl_key_file=/controller/certificates/server.key
+              (operator-issued). Not a leaked credential.
       # This cluster has no cluster-wide default StorageClass (confirmed via
       # `kubectl get storageclass` -- only nfs-csi and nfs-csi-retain exist,
       # neither marked default), so the trivy-server StatefulSet's PVC was
