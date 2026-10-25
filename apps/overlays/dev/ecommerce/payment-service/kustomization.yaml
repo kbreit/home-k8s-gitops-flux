@@ -44,6 +44,33 @@ patches:
             httpGet:
               path: /health
               port: http
+          # Hardening for Trivy KSV-0001/0003/0014/0104/0118. Merges with the
+          # chart's runAsNonRoot/runAsUser 1001 defaults; the container
+          # securityContext also applies to the migrate init container.
+          podSecurityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+            runAsGroup: 1001
+            fsGroup: 1001
+            seccompProfile:
+              type: RuntimeDefault
+          securityContext:
+            runAsGroup: 1001
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          # App writes nothing to its rootfs today; /tmp is a safety net for
+          # readOnlyRootFilesystem (main container only, not migrate).
+          volumes:
+            - name: tmp
+              emptyDir:
+                sizeLimit: 64Mi
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
     target:
       kind: HelmRelease
       name: payment-service
