@@ -13,3 +13,11 @@ spec:
         name: metallb
         namespace: flux-system
       interval: 10m
+  values:
+    # L2-only cluster (single L2Advertisement on br0, no BGPPeers), so no BGP
+    # backend is needed. Chart 0.16+ defaults to the frr-k8s backend, which
+    # deploys an FRRouting DaemonSet carrying its own openssl/grpc criticals and
+    # BGP-only CVEs. Disabling it leaves native mode: controller + speaker only.
+    # Re-enable if BGP peering is ever added.
+    frrk8s:
+      enabled: false

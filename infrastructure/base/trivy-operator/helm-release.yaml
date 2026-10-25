@@ -14,11 +14,20 @@ spec:
     name: trivy-operator
     namespace: flux-system
   values:
+    # Chart 0.32.1 is the newest published chart but defaults to operator
+    # 0.30.1 (grpc 1.78.0 / OpenSSL 3.5.5 criticals). Upstream's v0.35.0 chart
+    # source (0.37.0, unpublished) only differs from 0.32.1 by PV/PVC RBAC and
+    # PV/PVC config-audit kinds, so the old templates are safe for 0.35.0 as
+    # long as supportedConfigAuditKinds stays at the chart default. Drop this
+    # and the trivy.image.tag below once a newer chart is published.
+    image:
+      tag: "0.35.0"
     trivy:
-      # Chart 0.32.1 hard-codes trivy.tag 0.69.3 (grpc 1.78.0 / OpenSSL 3.5.5
-      # criticals). Override until a chart bump ships a newer default; matches
-      # the host scanners (0.74.0). Drop this once the chart default catches up.
-      tag: "0.74.0"
+      # Must be trivy.image.tag -- a bare trivy.tag is silently ignored (an
+      # earlier override sat here unapplied). 0.75.0 is upstream's default for
+      # operator 0.35.0.
+      image:
+        tag: "0.75.0"
       # Only report CVEs that have a fixed version available. Unfixed ones
       # (nothing actionable) are dropped from VulnerabilityReports entirely, so
       # they also won't show in `kubectl get vulnerabilityreports` or the Trivy

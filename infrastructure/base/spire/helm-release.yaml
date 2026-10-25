@@ -17,7 +17,7 @@ spec:
   chart:
     spec:
       chart: spire
-      version: "0.30.2"
+      version: "0.30.4"
       sourceRef:
         kind: HelmRepository
         name: spire
@@ -52,6 +52,21 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
+      # Chart 0.30.4 still defaults to csi-driver 0.2.7 and registrar v2.15.0
+      # (Go stdlib CVE-2025-68121 + grpc CVE-2026-33186 criticals). 0.2.13 is the
+      # latest 0.2.x; v2.17.0 matches what CSI NFS already runs. Drop these once
+      # the chart defaults catch up.
+      image:
+        tag: "0.2.13"
+      nodeDriverRegistrar:
+        image:
+          tag: v2.17.0
+    spiffe-oidc-discovery-provider:
+      # Chart default 0.11.0 carries the same two criticals; also used by the
+      # init container. Drop once the chart default catches up.
+      spiffeHelper:
+        image:
+          tag: 0.12.2
     global:
       spire:
         recommendations:
