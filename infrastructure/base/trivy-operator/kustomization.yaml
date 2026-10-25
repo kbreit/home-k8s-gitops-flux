@@ -4,3 +4,4 @@ resources:
   - ./namespace.yaml
   - ./oci-repository.yaml
   - ./helm-release.yaml
+  - ./rbac-pv-pvc.yaml
