@@ -6,6 +6,10 @@ metadata:
 spec:
   values:
     grafana:
+      # Patch bump over chart 91.7.0's default 13.2.2 for CVE fixes (187 -> 75 High).
+      # Drop once the chart default catches up.
+      image:
+        tag: 13.2.4-distroless
       plugins:
         - grafana-github-datasource
       ingress:

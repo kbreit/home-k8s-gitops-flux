@@ -1,0 +1,29 @@
+# Operator 0.35.0 (image override in helm-release.yaml) watches PersistentVolumes
+# and PersistentVolumeClaims unconditionally, but chart 0.32.1's ClusterRole
+# predates that and has no extra-rules hook. Without this the operator's cache
+# never syncs and it crashloops ("persistentvolumes is forbidden"). Mirrors the
+# rule upstream's (unpublished) 0.37.0 chart adds. Delete once the chart is
+# bumped past 0.32.1.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: trivy-operator-pv-pvc
+rules:
+  - apiGroups: [""]
+    resources:
+      - persistentvolumeclaims
+      - persistentvolumes
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: trivy-operator-pv-pvc
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: trivy-operator-pv-pvc
+subjects:
+  - kind: ServiceAccount
+    name: trivy-operator
+    namespace: trivy-system
