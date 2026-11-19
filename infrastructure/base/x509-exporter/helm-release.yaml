@@ -23,6 +23,36 @@ spec:
       create: true
       extraLabels:
         release: kube-prometheus-stack
+      # Every cert in cnpg-system and kyverno is issued and rotated by its
+      # own operator, which renews well inside the default 28d/14d windows
+      # (CNPG at 7d left on a 90d cert, Kyverno at 15d left on a 150d
+      # cert), so the built-in rules fired every cycle on healthy certs.
+      # Exclude them here and cover them with a later threshold below.
+      # Overrides replace the whole expr, so the thresholds are restated.
+      alertExprOverrides:
+        CertificateRenewal: >-
+          (x509_cert_not_after{secret_namespace!~"cnpg-system|kyverno"} - time()) < (28 * 86400)
+          and (x509_cert_not_after{secret_namespace!~"cnpg-system|kyverno"} - time()) > 0
+        CertificateExpiration: >-
+          (x509_cert_not_after{secret_namespace!~"cnpg-system|kyverno"} - time()) < (14 * 86400)
+      # Fires only if an operator missed its own renewal window. 5d is
+      # past both operators' renewal points, with time left to act.
+      extraAlertGroups:
+        - name: x509-certificate-exporter.operator-managed
+          rules:
+            - alert: OperatorCertificateNotRenewed
+              expr: (x509_cert_not_after{secret_namespace=~"cnpg-system|kyverno"} - time()) < (5 * 86400)
+              for: 1h
+              labels:
+                severity: critical
+              annotations:
+                summary: Operator-managed certificate was not renewed
+                description: >-
+                  Certificate `{{`{{ $labels.subject_CN }}`}}` in Secret
+                  `{{`{{ $labels.secret_namespace }}/{{ $labels.secret_name }}`}}`
+                  {{`{{ if lt $value 0.0 }}expired {{ humanizeDuration $value }} ago{{ else }}expires in {{ humanizeDuration $value }}{{ end }}`}},
+                  past its operator's renewal point. Check the CNPG or Kyverno
+                  controller logs for rotation errors.
     # Watches the control-plane's kubeadm PKI (apiserver/etcd certs at
     # /etc/kubernetes/pki) for expiry -- previously unmonitored. Only
     # kbedge001 has this directory, so the DaemonSet is pinned there.
