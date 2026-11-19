@@ -20,7 +20,7 @@ patches:
           ingress:
             host: product.home.kevinbreit.net
           image:
-            tag: "0.5.2"
+            tag: "0.5.3"
           imagePullSecrets:
             - name: ghcr-token
           envFrom:
