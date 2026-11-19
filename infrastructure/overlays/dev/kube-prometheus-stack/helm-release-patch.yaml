@@ -10,6 +10,12 @@ spec:
       # Drop once the chart default catches up.
       image:
         tag: 13.2.4-distroless
+      # Patch bump over chart 91.7.0's default 2.11.2 for certifi
+      # GHSA-6q48-6c7w-9gw2 (CRITICAL). Drop once the chart default catches up
+      # (kps 93.x ships 2.14.3).
+      sidecar:
+        image:
+          tag: 2.14.3
       plugins:
         - grafana-github-datasource
       ingress:
