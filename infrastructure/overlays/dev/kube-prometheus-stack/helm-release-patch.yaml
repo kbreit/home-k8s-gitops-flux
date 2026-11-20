@@ -6,10 +6,11 @@ metadata:
 spec:
   values:
     grafana:
-      # Patch bump over chart 91.7.0's default 13.2.2 for CVE fixes (187 -> 75 High).
-      # Drop once the chart default catches up.
+      # Patch bump over chart 91.7.0's default 13.2.2 for CVE fixes. 13.2.6 is
+      # 104 -> 33 High vs 13.2.4 (13.3.1 is no better). Drop once the chart
+      # default catches up.
       image:
-        tag: 13.2.4-distroless
+        tag: 13.2.6-distroless
       # Patch bump over chart 91.7.0's default 2.11.2 for certifi
       # GHSA-6q48-6c7w-9gw2 (CRITICAL). Drop once the chart default catches up
       # (kps 93.x ships 2.14.3).
@@ -77,6 +78,10 @@ spec:
             hosts:
               - alertmanager.home.kevinbreit.net
       alertmanagerSpec:
+        # Bump over chart 91.7.0's default v0.34.1 for CVE fixes (16 -> 4 High).
+        # Drop once the chart default catches up.
+        image:
+          tag: v0.35.0
         # The full Alertmanager config (routing tree + SMTP settings) lives in the
         # SOPS-encrypted alertmanager-config-secret.yaml rather than here, because
         # this repo is public and Alertmanager has no smtp_auth_username_file option
