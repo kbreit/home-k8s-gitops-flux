@@ -13,7 +13,7 @@ spec:
         name: open-telemetry
         namespace: flux-system
       interval: 10m
-      version: "0.123.0"
+      version: "0.129.1"
   values:
     manager:
       featureGatesMap:
