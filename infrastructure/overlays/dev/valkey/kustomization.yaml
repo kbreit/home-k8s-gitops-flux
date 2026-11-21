@@ -8,6 +8,12 @@ patches:
       - op: replace
         path: /spec/values
         value:
+          # Patch bump over chart 0.12.0's default 9.1.2: Valkey security fixes
+          # (GHSA-f4q9-j22m-xqq9, CVE-2026-130822) plus OS packages, 6 -> 1
+          # High. This patch replaces /spec/values wholesale, so overrides
+          # belong here, not in base. Drop once the pinned chart ships >= 9.1.4.
+          image:
+            tag: "9.1.4"
           auth:
             enabled: true
             usersExistingSecret: "valkey-secret"
