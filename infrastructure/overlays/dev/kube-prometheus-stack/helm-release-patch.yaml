@@ -57,6 +57,10 @@ spec:
             hosts:
               - prometheus.home.kevinbreit.net
       prometheusSpec:
+        # Patch bump over chart 91.7.0's default v3.15.0 for Go/x/net CVE fixes
+        # (12 -> 2 High). Drop once the chart default catches up.
+        image:
+          tag: v3.15.1-distroless
         # Mounts the SOPS-encrypted etcd-client-cert Secret at
         # /etc/prometheus/secrets/etcd-client-cert/ so the kubeEtcd ServiceMonitor
         # below can authenticate to etcd's client port. See kubeEtcd for details.
@@ -151,6 +155,11 @@ spec:
     # The chart's own default extraArgs (filesystem excludes) are repeated
     # below since Helm replaces arrays wholesale rather than merging them.
     prometheus-node-exporter:
+      # Bump over chart 91.7.0's default v1.12.1 for CVE fixes (16 -> 0 High).
+      # No suffix: the subchart appends -distroless itself. Drop once the
+      # chart default catches up.
+      image:
+        tag: v1.13.1
       extraArgs:
         - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
         - --collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$
