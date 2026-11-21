@@ -34,6 +34,43 @@ spec:
       # they also won't show in `kubectl get vulnerabilityreports` or the Trivy
       # Grafana dashboard. Re-scan with this off to see the full list.
       ignoreUnfixed: true
+      # Workaround for aquasecurity/trivy-operator#3022: the operator stores
+      # VendorSeverity[SeveritySource] and writes UNKNOWN when Trivy leaves
+      # SeveritySource empty (most Go module/stdlib CVEs), so reports under-count
+      # HIGH/CRITICAL (Grafana 13.2.6: 2 reported vs 18 real). An explicit list
+      # makes Trivy always set SeveritySource. Order is trivy-db's AllSourceIDs;
+      # NVD first means NVD wins over distro ratings. Mounted into scan Jobs as
+      # --config. Drop once #3117 or #3026 ships in an operator release.
+      configFile:
+        vulnerability:
+          severity-source:
+            - nvd
+            - redhat
+            - redhat-oval
+            - debian
+            - ubuntu
+            - alpine
+            - amazon
+            - oracle-oval
+            - suse-cvrf
+            - photon
+            - arch-linux
+            - alma
+            - rocky
+            - cbl-mariner
+            - azure
+            - ruby-advisory-db
+            - php-security-advisories
+            - nodejs-security-wg
+            - ghsa
+            - glad
+            - osv
+            - k8s
+            - wolfi
+            - chainguard
+            - bitnami
+            - govulndb
+            - julia
       # Trivy's YAML ignore format (selected by the .yaml file name), scoped
       # per finding + path rather than by bare ID. Applies to the
       # vulnerability/secret scan Jobs. Paths need the leading slash -- verified
