@@ -49,6 +49,46 @@ spec:
               upstream cloudnative-pg/postgresql image. Not used: Postgres
               runs with ssl_key_file=/controller/certificates/server.key
               (operator-issued). Not a leaked credential.
+        # CoreDNS v1.14.7 false positives. The binary embeds the pseudo-version
+        # v0.0.0-20260819003913-427fc80ed9ca, which is the v1.14.7 tag commit,
+        # so Trivy can't compare it against the fixed versions (all <= 1.14.7).
+        # The purl pins the exact version: on any CoreDNS bump these stop
+        # matching and must be re-checked, not copied forward.
+        vulnerabilities:
+          - id: CVE-2023-28452
+            purls: &coredns-1-14-7
+              - "pkg:golang/github.com/coredns/coredns@v0.0.0-20260819003913-427fc80ed9ca"
+            statement: CoreDNS false positive, fixed in 1.11.0 (running 1.14.7).
+          - id: CVE-2025-47950
+            purls: *coredns-1-14-7
+            statement: CoreDNS false positive, fixed in 1.12.2 (running 1.14.7).
+          - id: CVE-2026-26017
+            purls: *coredns-1-14-7
+            statement: CoreDNS false positive, fixed in 1.14.2 (running 1.14.7).
+          - id: CVE-2026-26018
+            purls: *coredns-1-14-7
+            statement: CoreDNS false positive, fixed in 1.14.2 (running 1.14.7).
+          - id: CVE-2026-32934
+            purls: *coredns-1-14-7
+            statement: CoreDNS false positive, fixed in 1.14.3 (running 1.14.7).
+          - id: CVE-2026-32936
+            purls: *coredns-1-14-7
+            statement: CoreDNS false positive, fixed in 1.14.3 (running 1.14.7).
+          - id: CVE-2026-33190
+            purls: *coredns-1-14-7
+            statement: CoreDNS false positive, fixed in 1.14.3 (running 1.14.7).
+          - id: CVE-2026-33489
+            purls: *coredns-1-14-7
+            statement: CoreDNS false positive, fixed in 1.14.3 (running 1.14.7).
+          - id: CVE-2026-35579
+            purls: *coredns-1-14-7
+            statement: CoreDNS false positive, fixed in 1.14.3 (running 1.14.7).
+          - id: CVE-2026-82399
+            purls: *coredns-1-14-7
+            statement: CoreDNS false positive, fixed in 1.14.7 (running 1.14.7).
+          - id: CVE-2026-86003
+            purls: *coredns-1-14-7
+            statement: CoreDNS false positive, fixed in 1.14.7 (running 1.14.7).
       # This cluster has no cluster-wide default StorageClass (confirmed via
       # `kubectl get storageclass` -- only nfs-csi and nfs-csi-retain exist,
       # neither marked default), so the trivy-server StatefulSet's PVC was
