@@ -20,7 +20,7 @@ spec:
 
     exporters:
       debug: {}
-      otlp:
+      otlp_grpc:
         endpoint: grafana-tempo.monitoring:4317
         tls:
           insecure: true
@@ -35,4 +35,4 @@ spec:
         traces:
           receivers: [otlp]
           processors: [memory_limiter]
-          exporters: [debug, otlp]
+          exporters: [debug, otlp_grpc]
