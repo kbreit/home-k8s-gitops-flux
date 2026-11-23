@@ -14,7 +14,7 @@ spec:
         name: kyverno
         namespace: flux-system
       interval: 10m
-      version: "3.9.2"
+      version: "3.10.0"
   upgrade:
     remediation:
       retries: 3
