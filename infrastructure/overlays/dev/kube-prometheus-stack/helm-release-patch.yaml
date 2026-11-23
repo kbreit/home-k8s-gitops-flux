@@ -6,17 +6,10 @@ metadata:
 spec:
   values:
     grafana:
-      # Patch bump over chart 91.7.0's default 13.2.2 for CVE fixes. 13.2.6 is
-      # 104 -> 33 High vs 13.2.4 (13.3.1 is no better). Drop once the chart
-      # default catches up.
+      # Held below chart 93.9.0's default 13.3.1, which scans 20 High vs 19 on
+      # 13.2.6 (Trivy, --ignore-unfixed). Drop once a newer default is no worse.
       image:
         tag: 13.2.6-distroless
-      # Patch bump over chart 91.7.0's default 2.11.2 for certifi
-      # GHSA-6q48-6c7w-9gw2 (CRITICAL). Drop once the chart default catches up
-      # (kps 93.x ships 2.14.3).
-      sidecar:
-        image:
-          tag: 2.14.3
       plugins:
         - grafana-github-datasource
       ingress:
@@ -57,10 +50,6 @@ spec:
             hosts:
               - prometheus.home.kevinbreit.net
       prometheusSpec:
-        # Patch bump over chart 91.7.0's default v3.15.0 for Go/x/net CVE fixes
-        # (12 -> 2 High). Drop once the chart default catches up.
-        image:
-          tag: v3.15.1-distroless
         # Mounts the SOPS-encrypted etcd-client-cert Secret at
         # /etc/prometheus/secrets/etcd-client-cert/ so the kubeEtcd ServiceMonitor
         # below can authenticate to etcd's client port. See kubeEtcd for details.
@@ -82,10 +71,6 @@ spec:
             hosts:
               - alertmanager.home.kevinbreit.net
       alertmanagerSpec:
-        # Bump over chart 91.7.0's default v0.34.1 for CVE fixes (16 -> 4 High).
-        # Drop once the chart default catches up.
-        image:
-          tag: v0.35.0
         # The full Alertmanager config (routing tree + SMTP settings) lives in the
         # SOPS-encrypted alertmanager-config-secret.yaml rather than here, because
         # this repo is public and Alertmanager has no smtp_auth_username_file option
@@ -155,11 +140,6 @@ spec:
     # The chart's own default extraArgs (filesystem excludes) are repeated
     # below since Helm replaces arrays wholesale rather than merging them.
     prometheus-node-exporter:
-      # Bump over chart 91.7.0's default v1.12.1 for CVE fixes (16 -> 0 High).
-      # No suffix: the subchart appends -distroless itself. Drop once the
-      # chart default catches up.
-      image:
-        tag: v1.13.1
       extraArgs:
         - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
         - --collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$
