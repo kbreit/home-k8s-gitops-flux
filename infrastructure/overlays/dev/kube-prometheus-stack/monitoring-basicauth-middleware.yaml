@@ -1,0 +1,12 @@
+# Basic auth for the Prometheus and Alertmanager Ingresses (Grafana has its own
+# login). Credentials live in the SOPS-encrypted monitoring-basicauth Secret.
+# Reference it from an Ingress as monitoring-monitoring-basicauth@kubernetescrd.
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: monitoring-basicauth
+  namespace: monitoring
+spec:
+  basicAuth:
+    secret: monitoring-basicauth
+    realm: "Monitoring"
